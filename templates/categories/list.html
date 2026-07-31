@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Categorias | ENGP{% endblock %}
+
+{% block body %}
+<main class="account-page categories-page">
+  <header class="account-header">
+    {% include 'registration/_brand.html' %}
+    <nav class="account-nav" aria-label="Navegação da conta">
+      <a class="text-link" href="{% url 'accounts:home' %}">Workspace</a>
+      <a class="text-link" href="{% url 'accounts:settings' %}">Configurações</a>
+      <form method="post" action="{% url 'accounts:logout' %}">
+        {% csrf_token %}
+        <button class="secondary-button compact-button" type="submit">Sair</button>
+      </form>
+    </nav>
+  </header>
+
+  <section class="categories-main">
+    {% include 'registration/_messages.html' %}
+    <div class="page-toolbar">
+      <div>
+        <p class="eyebrow">Organização do workspace</p>
+        <h1>Categorias</h1>
+        <p class="page-description">Use cores para reconhecer rapidamente as áreas que fazem parte do seu dia.</p>
+      </div>
+      <a class="primary-button category-create-button" href="{% url 'categories:create' %}">Nova categoria</a>
+    </div>
+
+    {% if categories %}
+      <div class="category-grid">
+        {% for category in categories %}
+          <article class="category-card">
+            <div class="category-card-topline">
+              <span class="category-swatch" data-color-token="{{ category.color_token }}" aria-hidden="true"></span>
+              {% if category.is_system %}<span class="category-status">Padrão</span>{% endif %}
+            </div>
+            <h2>{{ category.name }}</h2>
+            <p class="category-slug">{{ category.slug }}</p>
+            <div class="category-card-actions">
+              <a class="secondary-button compact-button" href="{% url 'categories:update' category.pk %}">Editar</a>
+              <form method="post" action="{% url 'categories:delete' category.pk %}" onsubmit="return window.confirm('Excluir a categoria {{ category.name|escapejs }}? As tarefas não serão excluídas.');">
+                {% csrf_token %}
+                <button class="danger-button compact-button" type="submit">Excluir</button>
+              </form>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <section class="empty-state" aria-labelledby="empty-categories-heading">
+        <span class="empty-state-mark" aria-hidden="true">+</span>
+        <h2 id="empty-categories-heading">Ainda não há categorias.</h2>
+        <p>Crie a primeira para organizar suas próximas tarefas sem adicionar complexidade.</p>
+        <a class="primary-button empty-state-button" href="{% url 'categories:create' %}">Criar primeira categoria</a>
+      </section>
+    {% endif %}
+  </section>
+</main>
+{% endblock %}

@@ -2622,14 +2622,14 @@ Integrações de calendário, equipes, relatórios avançados e aplicativos móv
 
 ### Sprint 6 — Categorias
 
-- [ ] Criar model Category.
-- [ ] Criar categorias iniciais.
-- [ ] Criar listagem.
-- [ ] Criar criação e edição.
-- [ ] Validar unicidade case-insensitive.
-- [ ] Criar exclusão segura.
-- [ ] Aplicar tokens de cor.
-- [ ] Filtrar por workspace.
+- [x] Criar model Category.
+- [x] Criar categorias iniciais.
+- [x] Criar listagem.
+- [x] Criar criação e edição.
+- [x] Validar unicidade case-insensitive.
+- [x] Criar exclusão segura.
+- [x] Aplicar tokens de cor.
+- [x] Filtrar por workspace.
 
 ### Sprint 7 — Onboarding
 

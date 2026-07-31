@@ -5,6 +5,7 @@ from uuid import uuid4
 from django.db import transaction
 from django.utils.text import slugify
 
+from categories.services import create_default_categories
 from tenants.models import Workspace, WorkspaceMembership
 
 from .models import User, UserSettings
@@ -12,7 +13,7 @@ from .models import User, UserSettings
 
 @transaction.atomic
 def create_account(*, email, password, first_name='', last_name=''):
-    '''Create a user and its personal owner workspace atomically.'''
+    '''Create the account, workspace and initial preferences atomically.'''
 
     user = User.objects.create_user(
         email=email,
@@ -34,6 +35,7 @@ def create_account(*, email, password, first_name='', last_name=''):
         role=WorkspaceMembership.Role.OWNER,
     )
     UserSettings.objects.create(user=user)
+    create_default_categories(workspace=workspace)
     return user, workspace
 
 

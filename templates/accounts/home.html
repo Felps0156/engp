@@ -7,6 +7,7 @@
   <header class="account-header">
     {% include 'registration/_brand.html' %}
     <nav class="account-nav" aria-label="Navegação da conta">
+      <a class="text-link" href="{% url 'categories:list' %}">Categorias</a>
       <a class="text-link" href="{% url 'accounts:settings' %}">Configurações</a>
       <form method="post" action="{% url 'accounts:logout' %}">
         {% csrf_token %}

@@ -13,7 +13,8 @@ O backend nativo `django.contrib.auth.backends.ModelBackend` continua suficiente
 1. usuário;
 2. workspace pessoal;
 3. membership com papel `owner`;
-4. `UserSettings` com os defaults do produto.
+4. `UserSettings` com os defaults do produto;
+5. quatro categorias padrão do workspace.
 
 A view autentica o usuário somente depois que a transação termina com sucesso. O slug do workspace recebe um sufixo curto aleatório para manter unicidade sem expor o e-mail.
 
