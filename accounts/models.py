@@ -1,7 +1,14 @@
-'''User model and manager for e-mail based authentication.'''
+'''User and account preference models.'''
 
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
+
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser, BaseUserManager
+from django.core.exceptions import ValidationError
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+
+from base.models import BaseModel
 
 
 class UserManager(BaseUserManager):
@@ -78,3 +85,96 @@ class User(AbstractUser):
     def save(self, *args, **kwargs):
         self.email = self.__class__.objects.normalize_email(self.email)
         return super().save(*args, **kwargs)
+
+
+def validate_timezone(value):
+    '''Validate that a value is an available IANA timezone identifier.'''
+
+    try:
+        ZoneInfo(value)
+    except (TypeError, ValueError, ZoneInfoNotFoundError):
+        raise ValidationError('Informe um fuso horário válido.')
+
+
+class UserSettings(BaseModel):
+    '''Preferences shared by all workspaces belonging to a user.'''
+
+    class Theme(models.TextChoices):
+        SYSTEM = 'system', 'Sistema'
+        LIGHT = 'light', 'Claro'
+        DARK = 'dark', 'Escuro'
+
+    class Language(models.TextChoices):
+        PT_BR = 'pt-br', 'Português (Brasil)'
+
+    class DateFormat(models.TextChoices):
+        DAY_MONTH_YEAR = 'DD/MM/YYYY', 'DD/MM/AAAA'
+        DAY_MONTH_YEAR_SHORT = 'DD/MM/YY', 'DD/MM/AA'
+        YEAR_MONTH_DAY = 'YYYY-MM-DD', 'AAAA-MM-DD'
+
+    class TimeFormat(models.TextChoices):
+        TWENTY_FOUR_HOUR = '24h', '24 horas (14:30)'
+        TWELVE_HOUR = '12h', '12 horas (2:30 PM)'
+
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name='settings',
+        verbose_name='usuário',
+    )
+    theme = models.CharField(
+        'tema',
+        max_length=10,
+        choices=Theme.choices,
+        default=Theme.SYSTEM,
+    )
+    timezone = models.CharField(
+        'fuso horário',
+        max_length=64,
+        default='America/Sao_Paulo',
+        validators=[validate_timezone],
+    )
+    language = models.CharField(
+        'idioma',
+        max_length=10,
+        choices=Language.choices,
+        default=Language.PT_BR,
+    )
+    date_format = models.CharField(
+        'formato de data',
+        max_length=12,
+        choices=DateFormat.choices,
+        default=DateFormat.DAY_MONTH_YEAR,
+    )
+    time_format = models.CharField(
+        'formato de horário',
+        max_length=4,
+        choices=TimeFormat.choices,
+        default=TimeFormat.TWENTY_FOUR_HOUR,
+    )
+    default_focus_minutes = models.PositiveSmallIntegerField(
+        'duração padrão do foco',
+        default=25,
+        validators=[MinValueValidator(1), MaxValueValidator(180)],
+    )
+    default_break_minutes = models.PositiveSmallIntegerField(
+        'duração padrão da pausa',
+        default=5,
+        validators=[MinValueValidator(1), MaxValueValidator(60)],
+    )
+    focus_end_sound_enabled = models.BooleanField(
+        'som ao encerrar o foco',
+        default=True,
+    )
+    onboarding_completed = models.BooleanField(
+        'onboarding concluído',
+        default=False,
+    )
+
+    class Meta:
+        verbose_name = 'configuração do usuário'
+        verbose_name_plural = 'configurações dos usuários'
+        ordering = ('user_id',)
+
+    def __str__(self):
+        return f'Configurações de {self.user}'

@@ -1,0 +1,220 @@
+{% extends 'base.html' %}
+
+{% block title %}Configurações | ENGP{% endblock %}
+
+{% block body %}
+<main class="account-page">
+  <header class="account-header">
+    {% include 'registration/_brand.html' %}
+    <nav class="account-nav" aria-label="Navegação da conta">
+      <a class="text-link" href="{% url 'accounts:home' %}">Voltar ao workspace</a>
+      <form method="post" action="{% url 'accounts:logout' %}">
+        {% csrf_token %}
+        <button class="secondary-button compact-button" type="submit">Sair</button>
+      </form>
+    </nav>
+  </header>
+
+  <section class="settings-main">
+    {% include 'registration/_messages.html' %}
+    <div class="settings-heading">
+      <div>
+        <p class="eyebrow">Conta pessoal</p>
+        <h1>Configurações</h1>
+      </div>
+      <p>Deixe o ENGP confortável para o seu ritmo, seu fuso e sua forma de trabalhar.</p>
+    </div>
+
+    <div class="settings-grid">
+      <section class="settings-card" aria-labelledby="profile-heading">
+        <div class="settings-card-heading">
+          <div>
+            <p class="settings-kicker">Perfil</p>
+            <h2 id="profile-heading">Como devemos chamar você?</h2>
+          </div>
+          <span class="settings-icon" aria-hidden="true">01</span>
+        </div>
+        <p class="settings-description">Seu nome aparece nas saudações e no seu workspace pessoal.</p>
+        <form method="post" action="{% url 'accounts:settings_profile' %}">
+          {% csrf_token %}
+          {% if profile_form.non_field_errors %}<div class="form-error" role="alert">{{ profile_form.non_field_errors }}</div>{% endif %}
+          <div class="form-grid two-columns">
+            <div class="field">
+              {{ profile_form.first_name.label_tag }}
+              {{ profile_form.first_name }}
+              {{ profile_form.first_name.errors }}
+            </div>
+            <div class="field">
+              {{ profile_form.last_name.label_tag }}
+              {{ profile_form.last_name }}
+              {{ profile_form.last_name.errors }}
+            </div>
+          </div>
+          <div class="settings-actions">
+            <button class="primary-button settings-submit" type="submit">Salvar perfil</button>
+          </div>
+        </form>
+      </section>
+
+      <form class="settings-preferences-form" method="post" action="{% url 'accounts:settings_preferences' %}">
+        {% csrf_token %}
+      <section class="settings-card" aria-labelledby="appearance-heading">
+        <div class="settings-card-heading">
+          <div>
+            <p class="settings-kicker">Aparência</p>
+            <h2 id="appearance-heading">Escolha o clima da interface.</h2>
+          </div>
+          <span class="settings-icon" aria-hidden="true">02</span>
+        </div>
+        <p class="settings-description">O modo sistema acompanha a preferência de aparência do seu dispositivo.</p>
+        {% if preferences_form.non_field_errors %}<div class="form-error" role="alert">{{ preferences_form.non_field_errors }}</div>{% endif %}
+          <div class="field">
+            {{ preferences_form.theme.label_tag }}
+            {{ preferences_form.theme }}
+            {{ preferences_form.theme.errors }}
+          </div>
+        <div class="settings-actions">
+          <button class="primary-button settings-submit" type="submit">Salvar aparência</button>
+        </div>
+      </section>
+
+      <section class="settings-card" aria-labelledby="focus-heading">
+        <div class="settings-card-heading">
+          <div>
+            <p class="settings-kicker">Foco</p>
+            <h2 id="focus-heading">Comece cada sessão sem decidir de novo.</h2>
+          </div>
+          <span class="settings-icon" aria-hidden="true">03</span>
+        </div>
+        <p class="settings-description">Esses valores serão usados pelo cronômetro quando ele estiver disponível.</p>
+        
+          <div class="form-grid two-columns">
+            <div class="field">
+              {{ preferences_form.default_focus_minutes.label_tag }}
+              {{ preferences_form.default_focus_minutes }}
+              <span class="field-help">Entre 1 e 180 minutos.</span>
+              {{ preferences_form.default_focus_minutes.errors }}
+            </div>
+            <div class="field">
+              {{ preferences_form.default_break_minutes.label_tag }}
+              {{ preferences_form.default_break_minutes }}
+              <span class="field-help">Entre 1 e 60 minutos.</span>
+              {{ preferences_form.default_break_minutes.errors }}
+            </div>
+          </div>
+          <label class="checkbox-field" for="{{ preferences_form.focus_end_sound_enabled.id_for_label }}">
+            {{ preferences_form.focus_end_sound_enabled }}
+            <span>
+              <strong>{{ preferences_form.focus_end_sound_enabled.label }}</strong>
+              <small>Você poderá ajustar o som ao concluir uma sessão.</small>
+            </span>
+          </label>
+          {{ preferences_form.focus_end_sound_enabled.errors }}
+        <div class="settings-actions">
+          <button class="primary-button settings-submit" type="submit">Salvar foco</button>
+        </div>
+      </section>
+
+      <section class="settings-card" aria-labelledby="localization-heading">
+        <div class="settings-card-heading">
+          <div>
+            <p class="settings-kicker">Localização</p>
+            <h2 id="localization-heading">Datas que fazem sentido para você.</h2>
+          </div>
+          <span class="settings-icon" aria-hidden="true">04</span>
+        </div>
+        <p class="settings-description">O idioma do MVP é Português (Brasil). O fuso é aplicado durante cada request.</p>
+        
+          <div class="field">
+            {{ preferences_form.timezone.label_tag }}
+            {{ preferences_form.timezone }}
+            {{ preferences_form.timezone.errors }}
+          </div>
+          <div class="form-grid two-columns settings-field-gap">
+            <div class="field">
+              {{ preferences_form.date_format.label_tag }}
+              {{ preferences_form.date_format }}
+              {{ preferences_form.date_format.errors }}
+            </div>
+            <div class="field">
+              {{ preferences_form.time_format.label_tag }}
+              {{ preferences_form.time_format }}
+              {{ preferences_form.time_format.errors }}
+            </div>
+          </div>
+        <div class="settings-actions">
+          <button class="primary-button settings-submit" type="submit">Salvar localização</button>
+        </div>
+      </section>
+      </form>
+
+      <section class="settings-card" aria-labelledby="email-heading">
+        <div class="settings-card-heading">
+          <div>
+            <p class="settings-kicker">E-mail</p>
+            <h2 id="email-heading">Mantenha sua conta acessível.</h2>
+          </div>
+          <span class="settings-icon" aria-hidden="true">05</span>
+        </div>
+        <p class="settings-description">E-mail atual: <strong>{{ request.user.email }}</strong>. Confirme sua senha para trocar o endereço.</p>
+        <form method="post" action="{% url 'accounts:settings_email' %}">
+          {% csrf_token %}
+          {% if email_form.non_field_errors %}<div class="form-error" role="alert">{{ email_form.non_field_errors }}</div>{% endif %}
+          <div class="form-grid two-columns">
+            <div class="field">
+              {{ email_form.new_email.label_tag }}
+              {{ email_form.new_email }}
+              {{ email_form.new_email.errors }}
+            </div>
+            <div class="field">
+              {{ email_form.current_password.label_tag }}
+              {{ email_form.current_password }}
+              {{ email_form.current_password.errors }}
+            </div>
+          </div>
+          <div class="settings-actions">
+            <button class="primary-button settings-submit" type="submit">Atualizar e-mail</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="settings-card" aria-labelledby="password-heading">
+        <div class="settings-card-heading">
+          <div>
+            <p class="settings-kicker">Segurança</p>
+            <h2 id="password-heading">Uma senha forte protege seu ritmo.</h2>
+          </div>
+          <span class="settings-icon" aria-hidden="true">06</span>
+        </div>
+        <p class="settings-description">Sua sessão continuará ativa depois da alteração.</p>
+        <form method="post" action="{% url 'accounts:settings_password' %}">
+          {% csrf_token %}
+          {% if password_form.non_field_errors %}<div class="form-error" role="alert">{{ password_form.non_field_errors }}</div>{% endif %}
+          <div class="form-grid">
+            <div class="field">
+              {{ password_form.old_password.label_tag }}
+              {{ password_form.old_password }}
+              {{ password_form.old_password.errors }}
+            </div>
+            <div class="form-grid two-columns">
+              <div class="field">
+                {{ password_form.new_password1.label_tag }}
+                {{ password_form.new_password1 }}
+                {{ password_form.new_password1.errors }}
+              </div>
+              <div class="field">
+                {{ password_form.new_password2.label_tag }}
+                {{ password_form.new_password2 }}
+                {{ password_form.new_password2.errors }}
+              </div>
+            </div>
+          </div>
+          <div class="settings-actions">
+            <button class="primary-button settings-submit" type="submit">Alterar senha</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </section>
+</main>
+{% endblock %}

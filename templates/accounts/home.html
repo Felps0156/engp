@@ -6,10 +6,13 @@
 <main class="account-page">
   <header class="account-header">
     {% include 'registration/_brand.html' %}
-    <form method="post" action="{% url 'accounts:logout' %}">
-      {% csrf_token %}
-      <button class="secondary-button" type="submit">Sair</button>
-    </form>
+    <nav class="account-nav" aria-label="Navegação da conta">
+      <a class="text-link" href="{% url 'accounts:settings' %}">Configurações</a>
+      <form method="post" action="{% url 'accounts:logout' %}">
+        {% csrf_token %}
+        <button class="secondary-button compact-button" type="submit">Sair</button>
+      </form>
+    </nav>
   </header>
   <section class="account-main">
     {% include 'registration/_messages.html' %}

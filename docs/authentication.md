@@ -12,7 +12,8 @@ O backend nativo `django.contrib.auth.backends.ModelBackend` continua suficiente
 
 1. usuário;
 2. workspace pessoal;
-3. membership com papel `owner`.
+3. membership com papel `owner`;
+4. `UserSettings` com os defaults do produto.
 
 A view autentica o usuário somente depois que a transação termina com sucesso. O slug do workspace recebe um sufixo curto aleatório para manter unicidade sem expor o e-mail.
 
@@ -22,9 +23,18 @@ A view autentica o usuário somente depois que a transação termina com sucesso
 - `/conta/cadastro/`: cadastro;
 - `/conta/logout/`: logout exclusivamente via POST;
 - `/conta/senha/redefinir/`: recuperação de senha nativa do Django;
+- `/conta/configuracoes/`: configurações de perfil, aparência, foco, localização e segurança;
+- `/conta/configuracoes/email/`: troca de e-mail com confirmação da senha atual;
+- `/conta/configuracoes/senha/`: troca de senha com preservação da sessão;
 - `/conta/`: landing autenticada temporária até a implementação do dashboard.
 
 As mensagens usam o framework nativo de messages e os formulários possuem CSRF, labels associados, erros visíveis e foco por teclado.
+
+## Preferências
+
+`accounts.UserSettings` pertence diretamente ao usuário, não ao workspace. O cadastro cria o registro dentro da mesma transação do usuário e do workspace. Bases existentes recebem um registro durante a migration `accounts.0002_usersettings`; a tela também possui fallback para usuários criados por integrações antigas.
+
+O tema persistido pode ser `system`, `light` ou `dark`. O template base aplica a preferência no elemento `<html>` antes dos estilos e acompanha mudanças do tema do sistema. O timezone salvo é ativado somente durante a request e sempre é limpo ao final do ciclo.
 
 ## E-mail
 

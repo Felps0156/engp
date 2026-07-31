@@ -1,7 +1,8 @@
 '''Authentication views and the post-authentication landing page.'''
 
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import login, update_session_auth_hash
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView as DjangoLoginView
 from django.contrib.auth.views import LogoutView as DjangoLogoutView
@@ -9,12 +10,21 @@ from django.contrib.auth.views import PasswordResetConfirmView
 from django.contrib.auth.views import PasswordResetDoneView
 from django.contrib.auth.views import PasswordResetView
 from django.contrib.auth.views import PasswordResetCompleteView
+from django.db import IntegrityError, transaction
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
-from django.views.generic import FormView
+from django.views.generic import FormView, TemplateView
 
-from .forms import EmailAuthenticationForm, SignupForm
-from .services import create_account
+from .forms import (
+    AccountPasswordChangeForm,
+    EmailAuthenticationForm,
+    EmailChangeForm,
+    PreferencesSettingsForm,
+    ProfileSettingsForm,
+    SignupForm,
+)
+from .models import User
+from .services import create_account, get_or_create_user_settings
 
 
 class SignupView(FormView):
@@ -99,6 +109,140 @@ def account_home(request):
     '''Provide a stable post-login landing until the dashboard sprint.'''
 
     return render(request, 'accounts/home.html')
+
+
+def settings_context(request):
+    '''Build the settings page forms for the current authenticated user.'''
+
+    user_settings = get_or_create_user_settings(user=request.user)
+    return {
+        'user_settings': user_settings,
+        'profile_form': ProfileSettingsForm(instance=request.user),
+        'preferences_form': PreferencesSettingsForm(instance=user_settings),
+        'email_form': EmailChangeForm(user=request.user),
+        'password_form': AccountPasswordChangeForm(user=request.user),
+    }
+
+
+class AccountSettingsView(LoginRequiredMixin, TemplateView):
+    '''Display account, preference and security forms in one screen.'''
+
+    template_name = 'accounts/settings.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(settings_context(self.request))
+        return context
+
+
+class SettingsFormView(LoginRequiredMixin, FormView):
+    '''Render a bound settings section alongside the other settings forms.'''
+
+    template_name = 'accounts/settings.html'
+    http_method_names = ('post', 'options')
+    success_url = reverse_lazy('accounts:settings')
+    form_context_name = 'form'
+    success_message = 'Configurações atualizadas.'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        bound_form = context.pop('form', None)
+        context.update(settings_context(self.request))
+        if bound_form is not None:
+            context[self.form_context_name] = bound_form
+        return context
+
+    def form_valid(self, form):
+        messages.success(self.request, self.success_message)
+        return super().form_valid(form)
+
+
+class ProfileSettingsView(SettingsFormView):
+    '''Update the authenticated user's display name.'''
+
+    form_class = ProfileSettingsForm
+    form_context_name = 'profile_form'
+    success_message = 'Seu nome foi atualizado.'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['instance'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+
+class PreferencesSettingsView(SettingsFormView):
+    '''Update theme, focus defaults, sound and localization preferences.'''
+
+    form_class = PreferencesSettingsForm
+    form_context_name = 'preferences_form'
+    success_message = 'Suas preferências foram atualizadas.'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['instance'] = get_or_create_user_settings(user=self.request.user)
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+
+class EmailSettingsView(SettingsFormView):
+    '''Change the account e-mail after checking the current password.'''
+
+    form_class = EmailChangeForm
+    form_context_name = 'email_form'
+    success_message = 'Seu e-mail foi atualizado.'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        try:
+            with transaction.atomic():
+                user = User.objects.select_for_update().get(
+                    pk=self.request.user.pk,
+                )
+                if not user.check_password(form.cleaned_data['current_password']):
+                    form.add_error(
+                        'current_password',
+                        'A senha atual está incorreta.',
+                    )
+                    return self.form_invalid(form)
+                user.email = form.cleaned_data['new_email']
+                user.save(update_fields=('email', 'updated_at'))
+        except IntegrityError:
+            form.add_error(
+                'new_email',
+                'Já existe uma conta com este e-mail.',
+            )
+            return self.form_invalid(form)
+
+        return super().form_valid(form)
+
+
+class PasswordSettingsView(SettingsFormView):
+    '''Change the password while preserving the current authenticated session.'''
+
+    form_class = AccountPasswordChangeForm
+    form_context_name = 'password_form'
+    success_message = 'Sua senha foi alterada.'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+
+    def form_valid(self, form):
+        user = form.save()
+        update_session_auth_hash(self.request, user)
+        return super().form_valid(form)
 
 
 def root(request):

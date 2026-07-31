@@ -1,10 +1,33 @@
 {% load static %}
 <!doctype html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="{{ user_theme|default:'light' }}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}ENGP{% endblock %}</title>
+  <script>
+    (() => {
+      const root = document.documentElement;
+      const preference = root.dataset.theme || 'light';
+      const media = window.matchMedia('(prefers-color-scheme: dark)');
+      const applyTheme = () => {
+        root.dataset.theme = preference === 'dark'
+          || (preference === 'system' && media.matches)
+          ? 'dark'
+          : 'light';
+      };
+
+      applyTheme();
+      if (preference === 'system') {
+        const handleChange = () => applyTheme();
+        if (media.addEventListener) {
+          media.addEventListener('change', handleChange);
+        } else {
+          media.addListener(handleChange);
+        }
+      }
+    })();
+  </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">

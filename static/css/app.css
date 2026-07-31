@@ -190,7 +190,7 @@ a {
   padding: 1.5rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-2xl);
-  background: #ffffff;
+  background: var(--color-surface-elevated);
   box-shadow: var(--shadow-soft);
 }
 
@@ -231,7 +231,7 @@ a {
   padding: 0 1rem;
   border: 1px solid var(--color-border);
   border-radius: 0.7rem;
-  background: #ffffff;
+  background: var(--color-surface-input);
   color: var(--color-text-primary);
   font: inherit;
   font-size: 0.95rem;
@@ -307,7 +307,7 @@ a {
 
 .secondary-button {
   border: 1px solid #d8e1f3;
-  background: linear-gradient(to bottom, #ffffff, #f8fbff);
+  background: linear-gradient(to bottom, var(--color-surface-elevated), var(--color-surface-subtle));
   color: var(--color-text-strong);
 }
 
@@ -357,7 +357,7 @@ a {
   padding: 0.75rem 0.9rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-md);
-  background: var(--color-surface-subtle);
+  background: var(--color-surface-elevated);
   color: var(--color-text-secondary);
   font-size: 0.84rem;
   line-height: 1.5;
@@ -387,7 +387,7 @@ a {
   min-height: 3.5rem;
   padding: 0 1.25rem;
   border-bottom: 1px solid var(--color-border);
-  background: rgb(255 255 255 / 0.9);
+  background: var(--color-surface-glass);
   backdrop-filter: blur(18px);
 }
 
@@ -401,7 +401,7 @@ a {
   padding: 2rem;
   border: 1px solid var(--color-border);
   border-radius: var(--radius-2xl);
-  background: #ffffff;
+  background: var(--color-surface-elevated);
   box-shadow: var(--shadow-soft);
 }
 
@@ -416,6 +416,184 @@ a {
 .account-card p {
   color: var(--color-text-secondary);
   line-height: 1.7;
+}
+
+.account-nav {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.compact-button {
+  min-height: 2.75rem;
+  padding: 0.6rem 1rem;
+  font-size: 0.85rem;
+}
+
+.settings-main {
+  width: min(100% - 2.5rem, 72rem);
+  margin: 0 auto;
+  padding: 3rem 0 5rem;
+}
+
+.settings-heading {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.settings-heading h1 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: clamp(2.35rem, 7vw, 3.15rem);
+  font-weight: 600;
+  letter-spacing: -0.065em;
+  line-height: 1.03;
+}
+
+.settings-heading > p {
+  max-width: 34rem;
+  margin: 0;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+.settings-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.settings-preferences-form {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 1.25rem;
+}
+
+.settings-card {
+  min-width: 0;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-xl);
+  background: var(--color-surface-elevated);
+  box-shadow: var(--shadow-soft);
+}
+
+.settings-card-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.settings-kicker {
+  margin: 0 0 0.65rem;
+  color: var(--color-brand-700);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.settings-card h2 {
+  max-width: 28rem;
+  margin: 0;
+  color: var(--color-text-strong);
+  font-size: 1.45rem;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+}
+
+.settings-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--color-border-brand);
+  border-radius: 0.7rem;
+  background: var(--color-surface-tint);
+  color: var(--color-brand-700);
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.settings-description {
+  margin: 0.9rem 0 1.25rem;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.settings-card .field select,
+.settings-card .field input {
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.7rem;
+  background: var(--color-surface-input);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+
+.settings-card .field select:focus,
+.settings-card .field input:focus {
+  border-color: var(--color-brand-600);
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
+}
+
+.settings-field-gap {
+  margin-top: 1rem;
+}
+
+.checkbox-field {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  margin-top: 1.2rem;
+  color: var(--color-text-strong);
+  cursor: pointer;
+}
+
+.checkbox-field input {
+  width: 1.2rem;
+  height: 1.2rem;
+  margin-top: 0.15rem;
+  accent-color: var(--color-brand-600);
+}
+
+.checkbox-field span {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.checkbox-field strong {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.checkbox-field small {
+  color: var(--color-text-secondary);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.settings-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.4rem;
+}
+
+.settings-submit {
+  width: auto;
+  min-height: 2.9rem;
+  padding: 0.65rem 1rem;
+  font-size: 0.85rem;
 }
 
 .sr-only {
@@ -445,6 +623,23 @@ a {
 
   .form-grid.two-columns {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .settings-heading {
+    grid-template-columns: minmax(0, 1fr) minmax(16rem, 0.7fr);
+    align-items: end;
+  }
+
+  .settings-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .settings-preferences-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .settings-card {
+    padding: 1.75rem;
   }
 }
 

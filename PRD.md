@@ -2608,17 +2608,17 @@ Integrações de calendário, equipes, relatórios avançados e aplicativos móv
 
 ### Sprint 5 — Configurações do usuário
 
-- [ ] Criar `UserSettings`.
-- [ ] Criar criação automática explícita no cadastro.
-- [ ] Implementar tema system/light/dark.
-- [ ] Implementar foco padrão.
-- [ ] Implementar pausa padrão.
-- [ ] Implementar som.
-- [ ] Implementar timezone.
-- [ ] Implementar formatos de data/hora.
-- [ ] Criar tela de configurações.
-- [ ] Criar alteração de senha.
-- [ ] Criar alteração de e-mail com validação.
+- [x] Criar `UserSettings`.
+- [x] Criar criação automática explícita no cadastro.
+- [x] Implementar tema system/light/dark.
+- [x] Implementar foco padrão.
+- [x] Implementar pausa padrão.
+- [x] Implementar som.
+- [x] Implementar timezone.
+- [x] Implementar formatos de data/hora.
+- [x] Criar tela de configurações.
+- [x] Criar alteração de senha.
+- [x] Criar alteração de e-mail com validação.
 
 ### Sprint 6 — Categorias
 
