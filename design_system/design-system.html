@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ENGP Design System</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="tokens.css">
+  <script src="https://cdn.tailwindcss.com/"></script>
+  <script src="https://unpkg.com/lucide@0.462.0/dist/umd/lucide.min.js"></script>
+  <style>
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-family-sans); color: var(--color-text-primary); }
+    .dashboard-card { box-shadow: var(--shadow-dashboard); }
+    .soft-card { box-shadow: var(--shadow-soft); }
+    .blue-card { box-shadow: 0 30px 60px rgba(29, 78, 216, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.28); }
+    @keyframes cms-shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+    .cms-loading {
+      position: relative;
+      color: transparent !important;
+      background-image: none !important;
+      background-color: transparent !important;
+      background: linear-gradient(90deg, rgba(128,128,128,.1) 25%, rgba(128,128,128,.2) 50%, rgba(128,128,128,.1) 75%) !important;
+      background-size: 200% 100% !important;
+      animation: cms-shimmer 1.5s infinite !important;
+      border-radius: 12px;
+      min-height: 1em;
+      min-width: 3em;
+      overflow: hidden;
+    }
+    @keyframes marquee {
+      0% { transform: translateX(0%); }
+      100% { transform: translateX(-50%); }
+    }
+    .marquee { animation: marquee 40s linear infinite; }
+    @keyframes float-soft {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+    @keyframes float-soft-delayed {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+    @keyframes pulse-soft {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(.96); opacity: .85; }
+    }
+    @keyframes slide-x-soft {
+      0%, 100% { transform: translateX(0); }
+      50% { transform: translateX(3px); }
+    }
+    @keyframes scale-y-up {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(1.1); }
+    }
+    @keyframes scale-y-down {
+      0%, 100% { transform: scaleY(1); }
+      50% { transform: scaleY(.9); }
+    }
+    @keyframes shimmer-soft {
+      0%, 100% { opacity: .3; }
+      50% { opacity: .7; }
+    }
+    .anim-float { animation: float-soft 4s ease-in-out infinite; }
+    .anim-float-delayed-1 { animation: float-soft-delayed 5s ease-in-out infinite 1s; }
+    .anim-float-delayed-2 { animation: float-soft 4.5s ease-in-out infinite .5s; }
+    .anim-float-delayed-3 { animation: float-soft-delayed 6s ease-in-out infinite 2s; }
+    .anim-pulse-soft { animation: pulse-soft 3s ease-in-out infinite; }
+    .anim-slide-x-1 { animation: slide-x-soft 4s ease-in-out infinite; }
+    .anim-slide-x-2 { animation: slide-x-soft 5s ease-in-out infinite 1s; }
+    .anim-slide-x-3 { animation: slide-x-soft 4.5s ease-in-out infinite .5s; }
+    .anim-bar-1 { animation: scale-y-up 3s ease-in-out infinite; transform-origin: bottom; }
+    .anim-bar-2 { animation: scale-y-down 4s ease-in-out infinite .5s; transform-origin: bottom; }
+    .anim-bar-3 { animation: scale-y-up 3.5s ease-in-out infinite 1s; transform-origin: bottom; }
+    .anim-bar-4 { animation: scale-y-down 4.5s ease-in-out infinite .2s; transform-origin: bottom; }
+    .anim-bar-5 { animation: scale-y-up 4s ease-in-out infinite .8s; transform-origin: bottom; }
+    .anim-shimmer { animation: shimmer-soft 3s ease-in-out infinite; }
+  </style>
+</head>
+<body class="min-h-screen bg-white text-slate-950 antialiased">
+  <nav aria-label="Navegacao do design system" class="fixed inset-x-0 top-0 z-50 overflow-x-auto border-b border-slate-200 bg-white/90 px-5 shadow-sm backdrop-blur-xl sm:px-9 lg:px-16">
+    <div class="mx-auto flex h-14 w-max min-w-full max-w-[1472px] items-center gap-7 text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">
+      <a href="#0" class="text-blue-700">Shell</a>
+      <a href="#1" class="transition hover:text-blue-700">Tipografia</a>
+      <a href="#2" class="transition hover:text-blue-700">Cores</a>
+      <a href="#3" class="transition hover:text-blue-700">Navegacao</a>
+      <a href="#4" class="transition hover:text-blue-700">Formularios</a>
+      <a href="#5" class="transition hover:text-blue-700">Dados</a>
+      <a href="#6" class="transition hover:text-blue-700">UI</a>
+      <a href="#7" class="transition hover:text-blue-700">Layout</a>
+      <a href="#8" class="transition hover:text-blue-700">Movimento</a>
+      <a href="#9" class="transition hover:text-blue-700">Icones</a>
+    </div>
+  </nav>
+
+  <main class="overflow-hidden pt-14">
+    <!-- 0. Application Shell -->
+    <section id="0" class="relative z-10 mx-auto w-full max-w-[1600px] scroll-mt-14 px-5 sm:px-9 lg:px-16">
+      <div class="pointer-events-none absolute left-5 top-0 hidden h-full w-px bg-slate-200/80 sm:left-9 md:block lg:left-16"></div>
+      <div class="pointer-events-none absolute right-5 top-0 hidden h-full w-px bg-slate-200/80 sm:right-9 md:block lg:right-16"></div>
+      <header class="flex items-center justify-between border-b border-slate-200/80 px-6 py-8 lg:px-16">
+        <a href="#0" class="flex items-center gap-4" aria-label="ENGP Design System">
+          <span class="relative h-8 w-8 shrink-0">
+            <span class="absolute left-0 top-0 h-2.5 w-2.5 rounded bg-blue-700"></span>
+            <span class="absolute right-0 top-0 h-2.5 w-2.5 rounded bg-blue-700"></span>
+            <span class="absolute left-1/2 top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded bg-blue-700"></span>
+            <span class="absolute bottom-0 left-0 h-2.5 w-2.5 rounded bg-blue-700"></span>
+            <span class="absolute bottom-0 right-0 h-2.5 w-2.5 rounded bg-blue-700"></span>
+          </span>
+          <span class="text-2xl font-semibold tracking-[-0.04em] text-black sm:text-3xl">ENGP</span>
+        </a>
+        <nav class="hidden items-center gap-10 text-sm font-medium text-slate-950 xl:flex">
+          <a href="#1" class="transition hover:text-blue-700">Fundamentos</a>
+          <a href="#3" class="transition hover:text-blue-700">Padroes</a>
+          <a href="#6" class="transition hover:text-blue-700">Componentes</a>
+          <a href="#8" class="transition hover:text-blue-700">Movimento</a>
+        </nav>
+        <div class="flex items-center gap-3">
+          <a href="#1" class="group relative hidden h-12 items-center justify-center overflow-hidden rounded-[16px] bg-gradient-to-br from-[#2f6bff] via-[#2454f4] to-[#1237d8] pl-5 pr-2.5 text-[15px] font-semibold tracking-[-0.02em] text-white shadow-[0_18px_38px_rgba(37,84,244,0.28),inset_0_1px_0_rgba(255,255,255,0.32)] transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_22px_48px_rgba(37,84,244,0.36),inset_0_1px_0_rgba(255,255,255,0.38)] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/25 focus-visible:ring-offset-2 active:translate-y-0 active:scale-[0.99] sm:inline-flex">
+             <span class="relative z-10 whitespace-nowrap">Explorar sistema</span>
+            <span class="relative z-10 ml-3 inline-flex h-9 w-9 items-center justify-center rounded-[12px] border border-white/15 bg-white/15 backdrop-blur-md transition-all duration-300 group-hover:translate-x-0.5">
+              <i data-lucide="arrow-up-right" class="h-4 w-4"></i>
+            </span>
+          </a>
+          <button class="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-950 shadow-sm xl:hidden" aria-label="Abrir menu">
+            <i data-lucide="menu" class="h-5 w-5"></i>
+          </button>
+        </div>
+      </header>
+
+      <div class="grid items-center gap-12 px-6 py-16 lg:grid-cols-[0.88fr_1.12fr] lg:px-16 lg:py-24">
+        <div class="max-w-3xl">
+          <div class="mb-7 inline-flex items-center gap-3 text-sm font-semibold uppercase tracking-[0.08em] text-blue-700">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-blue-50"><i data-lucide="sparkles" class="h-[18px] w-[18px]"></i></span>
+            Biblioteca de padroes ENGP
+          </div>
+          <h1 class="max-w-[760px] text-[3.15rem] font-semibold leading-[1.03] tracking-[-0.065em] text-black sm:text-6xl lg:text-[4.55rem] xl:text-[5.05rem]">
+            Estrutura visual para <span class="text-blue-700">produtividade pessoal.</span>
+          </h1>
+          <p class="mt-7 max-w-[590px] text-lg leading-8 text-slate-500 sm:text-xl">Um inventario vivo de fundamentos, padroes de interface, exibicao de dados e comportamento de movimento do ENGP.</p>
+          <div class="mt-9 flex flex-col gap-4 sm:flex-row sm:gap-5">
+            <a href="#6" class="group relative inline-flex h-14 w-full items-center justify-center overflow-hidden rounded-[18px] bg-gradient-to-br from-[#2f6bff] via-[#2454f4] to-[#1237d8] pl-7 pr-3 text-[16px] font-semibold tracking-[-0.02em] text-white shadow-[0_18px_38px_rgba(37,84,244,0.28),inset_0_1px_0_rgba(255,255,255,0.32)] transition-all duration-300 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/25 active:scale-[0.99] sm:w-auto">
+              <span class="relative z-10">Componentes</span>
+              <span class="relative z-10 ml-4 inline-flex h-11 w-11 items-center justify-center rounded-[14px] border border-white/15 bg-white/15 backdrop-blur-md"><i data-lucide="arrow-up-right" class="h-5 w-5"></i></span>
+            </a>
+            <a href="#2" class="group relative inline-flex h-14 w-full items-center justify-center overflow-hidden rounded-[18px] border border-[#d8e1f3] bg-gradient-to-b from-white to-[#f8fbff] pl-7 pr-3 text-[16px] font-semibold tracking-[-0.02em] text-[#06145b] shadow-[0_14px_32px_rgba(15,23,42,0.07),inset_0_1px_0_rgba(255,255,255,0.9)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#b9c9ee] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20 active:scale-[0.99] sm:w-auto">
+              <span class="relative z-10">Fundamentos</span>
+              <span class="relative z-10 ml-4 inline-flex h-11 w-11 items-center justify-center rounded-[14px] border border-[#dfe7f7] bg-white"><i data-lucide="layers" class="h-5 w-5"></i></span>
+            </a>
+          </div>
+        </div>
+
+        <div class="relative mx-auto w-full max-w-[760px] py-10">
+          <div class="soft-card overflow-hidden rounded-[18px] border border-slate-200 bg-white/85 backdrop-blur-xl">
+            <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+              <div class="flex items-center gap-3">
+                <span class="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-700"><i data-lucide="scan-search" class="h-5 w-5"></i></span>
+                <div><p class="text-sm font-semibold text-[#06145b]">Console do design system</p><p class="text-xs font-medium text-slate-400">Inventario de componentes</p></div>
+              </div>
+              <span class="rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600">Ativo</span>
+            </div>
+            <div class="grid lg:grid-cols-[180px_1fr]">
+              <aside class="hidden border-r border-slate-200 bg-slate-50/60 p-4 lg:block">
+                <div class="space-y-2 text-xs font-semibold text-slate-500">
+                  <button class="flex w-full items-center gap-2 rounded-lg border border-blue-200 px-3 py-2" aria-current="true"><i data-lucide="brain-circuit" class="h-4 w-4"></i> Fundamentos</button>
+                  <button class="flex w-full items-center gap-2 rounded-lg border border-transparent px-3 py-2"><i data-lucide="wallet" class="h-4 w-4"></i> Componentes</button>
+                  <button class="flex w-full items-center gap-2 rounded-lg border border-transparent px-3 py-2"><i data-lucide="radar" class="h-4 w-4"></i> Dados</button>
+                  <button class="flex w-full items-center gap-2 rounded-lg border border-transparent px-3 py-2"><i data-lucide="plug-zap" class="h-4 w-4"></i> Movimento</button>
+                </div>
+              </aside>
+              <div class="p-5 sm:p-7">
+                <div class="grid gap-4 sm:grid-cols-3">
+                  <div class="rounded-lg border border-slate-200 bg-white p-4"><p class="text-xs font-medium text-slate-400">Padroes</p><p class="mt-2 text-2xl font-semibold tracking-tight">28</p><p class="mt-1 text-xs font-semibold text-emerald-600">Auditados</p></div>
+                  <div class="rounded-lg border border-slate-200 bg-white p-4"><p class="text-xs font-medium text-slate-400">Cobertura</p><p class="mt-2 text-2xl font-semibold tracking-tight">100%</p><p class="mt-1 text-xs font-semibold text-blue-700">Baseada em tokens</p></div>
+                  <div class="rounded-lg border border-slate-200 bg-white p-4"><p class="text-xs font-medium text-slate-400">Tema</p><p class="mt-2 text-2xl font-semibold tracking-tight">Claro</p><p class="mt-1 text-xs font-semibold text-slate-500">ENGP</p></div>
+                </div>
+                <div class="mt-5 rounded-lg border border-slate-200 bg-white p-4">
+                  <div class="mb-4 flex items-center justify-between"><p class="text-sm font-semibold text-[#06145b]">Cobertura da referencia</p><span class="text-xs font-semibold text-blue-700">4 grupos</span></div>
+                  <div class="space-y-3">
+                    <div class="flex items-center gap-3 rounded-lg bg-blue-50/70 px-3 py-3"><span class="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-700 text-white"><i data-lucide="check" class="h-4 w-4"></i></span><div class="min-w-0 flex-1"><p class="text-sm font-semibold text-slate-800">Fundamentos registrados</p><p class="text-xs font-medium text-slate-500">Tipografia, cores, superficies e espacos</p></div></div>
+                    <div class="flex items-center gap-3 rounded-lg bg-slate-50 px-3 py-3"><span class="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-100 text-blue-700"><i data-lucide="file-search" class="h-4 w-4"></i></span><div class="min-w-0 flex-1"><p class="text-sm font-semibold text-slate-800">Padroes documentados</p><p class="text-xs font-medium text-slate-500">Navegacao, cards, campos e estados</p></div></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Shared section wrapper -->
+    <section id="1" class="relative mx-auto w-full max-w-[1472px] scroll-mt-14 border-x border-t border-slate-200/80 px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <div class="mb-14 grid gap-6 md:grid-cols-[1fr_0.72fr] md:items-end">
+        <div><p class="mb-5 text-xs font-semibold uppercase tracking-[0.14em] text-blue-700">01 / Fundamentos</p><h2 class="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">Tipografia</h2></div>
+        <p class="max-w-[430px] text-base leading-7 text-slate-500 md:justify-self-end">Inter organiza a leitura com contraste de peso, escala ampla e tracking compacto nos títulos.</p>
+      </div>
+      <div class="divide-y divide-slate-200 border-y border-slate-200">
+        <div class="grid items-center gap-6 py-8 md:grid-cols-[180px_1fr_150px]"><p class="text-sm font-medium text-slate-500">Titulo de pagina</p><p class="text-[3.15rem] font-semibold leading-[1.03] tracking-[-0.065em] text-black">Organize seu dia com clareza.</p><p class="text-right text-sm text-slate-400">50.4px / 51.9px</p></div>
+        <div class="grid items-center gap-6 py-8 md:grid-cols-[180px_1fr_150px]"><p class="text-sm font-medium text-slate-500">Titulo de secao</p><p class="text-4xl font-semibold leading-[1.05] tracking-tight text-slate-950">Tudo o que importa, em um lugar.</p><p class="text-right text-sm text-slate-400">36px / 37.8px</p></div>
+        <div class="grid items-center gap-6 py-8 md:grid-cols-[180px_1fr_150px]"><p class="text-sm font-medium text-slate-500">Titulo de card</p><p class="text-2xl font-semibold leading-tight tracking-tight text-slate-950">Tarefas organizadas com simplicidade.</p><p class="text-right text-sm text-slate-400">24px / 30px</p></div>
+        <div class="grid items-center gap-6 py-8 md:grid-cols-[180px_1fr_150px]"><p class="text-sm font-medium text-slate-500">Subtitulo</p><p class="text-lg leading-8 text-slate-500">Planeje sua semana e comece a proxima acao.</p><p class="text-right text-sm text-slate-400">18px / 32px</p></div>
+        <div class="grid items-center gap-6 py-8 md:grid-cols-[180px_1fr_150px]"><p class="text-sm font-medium text-slate-500">Texto de corpo</p><p class="text-base leading-7 text-slate-500">Capture tarefas, crie rotinas e acompanhe seu foco em um fluxo unico.</p><p class="text-right text-sm text-slate-400">16px / 28px</p></div>
+        <div class="grid items-center gap-6 py-8 md:grid-cols-[180px_1fr_150px]"><p class="text-sm font-medium text-slate-500">Texto pequeno</p><p class="text-sm leading-6 text-slate-500">Uma interface direta para decidir o que fazer agora.</p><p class="text-right text-sm text-slate-400">14px / 24px</p></div>
+        <div class="grid items-center gap-6 py-8 md:grid-cols-[180px_1fr_150px]"><p class="text-sm font-medium text-slate-500">Rotulo</p><p class="text-xs font-semibold uppercase tracking-[0.14em] text-blue-700">Sistema de produtividade pessoal</p><p class="text-right text-sm text-slate-400">12px / 16px</p></div>
+        <div class="grid items-center gap-6 py-8 md:grid-cols-[180px_1fr_150px]"><p class="text-sm font-medium text-slate-500">Legenda</p><p class="text-[10px] font-medium uppercase tracking-wide text-slate-400">Atividade diaria</p><p class="text-right text-sm text-slate-400">10px / 15px</p></div>
+      </div>
+    </section>
+
+    <section id="2" class="relative mx-auto w-full max-w-[1472px] scroll-mt-14 border-x border-t border-slate-200/80 px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <div class="mb-14"><p class="mb-5 text-xs font-semibold uppercase tracking-[0.14em] text-blue-700">02 / Fundamentos</p><h2 class="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">Cores, superficies e estados</h2></div>
+      <h3 class="mb-6 text-2xl font-semibold tracking-tight">2.1 Cores de interface</h3>
+      <div class="mb-16 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <div class="border border-slate-200"><div class="h-28 bg-white"></div><p class="border-t border-slate-200 p-4 text-sm font-medium">Aplicacao / #FFFFFF</p></div>
+        <div class="border border-slate-200"><div class="h-28 bg-slate-50"></div><p class="border-t border-slate-200 p-4 text-sm font-medium">Barra lateral / Slate 50</p></div>
+        <div class="border border-slate-200"><div class="h-28 bg-[#06145b]"></div><p class="border-t border-slate-200 p-4 text-sm font-medium">Navy profundo / #06145B</p></div>
+        <div class="border border-slate-200"><div class="h-28 bg-blue-700"></div><p class="border-t border-slate-200 p-4 text-sm font-medium">Marca / Blue 700</p></div>
+        <div class="border border-slate-200"><div class="h-28 bg-blue-50"></div><p class="border-t border-slate-200 p-4 text-sm font-medium">Tom / Blue 50</p></div>
+      </div>
+      <h3 class="mb-6 text-2xl font-semibold tracking-tight">2.2 Estados semanticos presentes</h3>
+      <div class="mb-16 grid gap-5 md:grid-cols-3">
+        <div class="border border-slate-200 p-6"><p class="mb-4 text-sm font-semibold text-slate-400">Sucesso</p><span class="rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600">Ativo</span><p class="mt-5 text-xs font-semibold text-emerald-600">3 tarefas concluidas</p></div>
+        <div class="border border-slate-200 p-6"><p class="mb-4 text-sm font-semibold text-slate-400">Informacao</p><span class="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">4 itens ativos</span><div class="mt-5 border border-blue-200 bg-blue-50/70 px-4 py-3 text-sm text-blue-700">Fluxo de foco habilitado</div></div>
+        <div class="border border-slate-200 p-6"><p class="mb-4 text-sm font-semibold text-slate-400">Neutro</p><span class="rounded-full bg-slate-50 px-3 py-1 text-xs font-medium text-slate-500 ring-1 ring-slate-200">Acompanhando</span><p class="mt-5 text-xs font-semibold text-slate-500">Estavel</p></div>
+      </div>
+      <h3 class="mb-6 text-2xl font-semibold tracking-tight">2.3 Superficies e efeitos</h3>
+      <div class="grid gap-5 lg:grid-cols-4">
+        <div class="border border-slate-200 bg-white p-6"><p class="text-sm font-semibold">Borda</p><p class="mt-2 text-sm text-slate-500">1px / Slate 200</p></div>
+        <div class="soft-card border border-slate-200 bg-white p-6"><p class="text-sm font-semibold">Sombra suave</p><p class="mt-2 text-sm text-slate-500">0 16px 44px</p></div>
+        <div class="blue-card border border-blue-300/30 bg-[radial-gradient(circle_at_90%_20%,rgba(96,165,250,0.85),transparent_16%),linear-gradient(135deg,#0b2da8_0%,#071855_56%,#0c37c8_100%)] p-6 text-white"><p class="text-sm font-semibold">Gradiente azul</p><p class="mt-2 text-sm text-blue-50">Superficie de destaque</p></div>
+        <div class="border border-slate-200 bg-white/70 p-6 backdrop-blur-xl"><p class="text-sm font-semibold">Vidro</p><p class="mt-2 text-sm text-slate-500">Branco 70% + blur XL</p></div>
+      </div>
+    </section>
+
+    <section id="3" class="relative mx-auto w-full max-w-[1472px] scroll-mt-14 border-x border-t border-slate-200/80 px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <div class="mb-14"><p class="mb-5 text-xs font-semibold uppercase tracking-[0.14em] text-blue-700">03 / Padroes</p><h2 class="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">Navegacao e estrutura</h2></div>
+      <h3 class="mb-6 text-2xl font-semibold tracking-tight">3.1 Menu do console</h3>
+      <div class="mb-14 max-w-[260px] border border-slate-200 bg-slate-50/60 p-4">
+        <div class="space-y-2 text-xs font-semibold text-slate-500">
+          <button class="flex w-full items-center gap-2 rounded-lg border border-transparent px-3 py-2 transition hover:border-slate-200 hover:bg-white"><i data-lucide="brain-circuit" class="h-4 w-4"></i> Padrao / hover</button>
+          <button class="flex w-full items-center gap-2 rounded-lg border border-blue-200 px-3 py-2" aria-current="true"><i data-lucide="wallet" class="h-4 w-4"></i> Pagina ativa</button>
+          <button class="flex w-full items-center gap-2 rounded-lg border border-transparent px-3 py-2"><i data-lucide="radar" class="h-4 w-4"></i> Acompanhamento</button>
+        </div>
+      </div>
+      <h3 class="mb-6 text-2xl font-semibold tracking-tight">3.2 Header responsivo</h3>
+      <header class="mb-14 flex items-center justify-between border border-slate-200 bg-white px-6 py-6">
+        <div class="flex items-center gap-3"><span class="grid grid-cols-2 gap-[2px]"><span class="h-2.5 w-2.5 bg-blue-700"></span><span class="h-2.5 w-2.5 bg-blue-700"></span><span class="h-2.5 w-2.5 bg-blue-700"></span><span class="h-2.5 w-2.5 bg-blue-700"></span></span><span class="text-2xl font-semibold tracking-tight">ENGP</span></div>
+        <div class="hidden items-center gap-10 text-sm font-medium lg:flex"><a href="#3" class="transition hover:text-blue-700">Tarefas</a><a href="#3" class="text-blue-700">Rotina</a><a href="#3" class="transition hover:text-blue-700">Foco</a></div>
+        <button class="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm lg:hidden"><i data-lucide="menu" class="h-5 w-5"></i></button>
+      </header>
+      <h3 class="mb-6 text-2xl font-semibold tracking-tight">3.3 Accordion de duvidas</h3>
+      <div class="divide-y divide-slate-200 border-y border-slate-200">
+        <details class="group py-6" open><summary class="flex cursor-pointer list-none items-start justify-between gap-8"><h3 class="mt-2 text-2xl font-semibold tracking-tight">Quanto tempo leva para configurar?</h3><span class="mt-2 text-3xl font-light leading-none text-blue-700 transition group-open:rotate-45">+</span></summary><p class="mt-5 max-w-2xl text-base leading-7 text-slate-500">O usuario pode comecar com uma tarefa e ajustar o restante depois.</p></details>
+        <details class="group py-6"><summary class="flex cursor-pointer list-none items-start justify-between gap-8"><h3 class="mt-2 text-2xl font-semibold tracking-tight">O ENGP funciona com outras ferramentas?</h3><span class="mt-2 text-3xl font-light leading-none text-blue-700 transition group-open:rotate-45">+</span></summary><p class="mt-5 max-w-2xl text-base leading-7 text-slate-500">O MVP prioriza o fluxo interno de tarefas, rotina e foco.</p></details>
+      </div>
+    </section>
+
+    <section id="4" class="relative mx-auto w-full max-w-[1472px] scroll-mt-14 border-x border-t border-slate-200/80 px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <div class="mb-14"><p class="mb-5 text-xs font-semibold uppercase tracking-[0.14em] text-blue-700">04 / Componentes</p><h2 class="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">Componentes de formulario</h2></div>
+      <h3 class="mb-6 text-2xl font-semibold tracking-tight">4.1 Campo de e-mail</h3>
+      <div class="mb-14 grid gap-5 lg:grid-cols-3">
+        <div><p class="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Padrao</p><input type="email" placeholder="seu@email.com" aria-label="E-mail padrao" class="h-13 w-full border border-slate-200 bg-white px-4 text-sm text-slate-700 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10"></div>
+        <div><p class="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Foco</p><input type="email" placeholder="seu@email.com" aria-label="E-mail em foco" class="h-13 w-full border border-blue-600 bg-white px-4 text-sm text-slate-700 shadow-sm outline-none ring-4 ring-blue-600/10 placeholder:text-slate-400"></div>
+        <div><p class="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Preenchido</p><input type="email" value="voce@exemplo.com" aria-label="E-mail preenchido" class="h-13 w-full border border-slate-200 bg-white px-4 text-sm text-slate-700 shadow-sm outline-none transition focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10"></div>
+      </div>
+      <h3 class="mb-6 text-2xl font-semibold tracking-tight">4.2 Composicao de captura</h3>
+      <div class="max-w-3xl border border-slate-200/80 bg-gradient-to-br from-white via-slate-50 to-blue-50/40 p-8 sm:p-10">
+        <span class="inline-flex border border-slate-200 bg-white px-3 py-1 text-xs font-medium uppercase tracking-[0.18em] text-slate-500 shadow-sm">Notas</span>
+        <h3 class="mt-6 text-4xl font-semibold tracking-[-0.05em] sm:text-5xl">Planejamento pessoal, sem excesso.</h3>
+        <p class="mt-5 max-w-[480px] text-base leading-7 text-slate-500">Tarefas, rotina e foco em um fluxo simples para decidir a proxima acao.</p>
+        <div class="mt-8 grid gap-3 sm:grid-cols-[1fr_auto]"><input type="email" placeholder="seu@email.com" aria-label="Seu e-mail" class="h-13 w-full border border-slate-200 bg-white px-4 text-sm text-slate-700 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10"><button type="button" class="group inline-flex h-13 items-center justify-center gap-3 bg-blue-700 px-5 text-sm font-semibold text-white shadow-[0_18px_38px_rgba(29,78,216,0.22)] transition hover:-translate-y-0.5 hover:bg-blue-800 active:translate-y-0">Salvar <i data-lucide="arrow-right" class="h-4 w-4 transition group-hover:translate-x-0.5"></i></button></div>
+      </div>
+    </section>
+
+    <section id="5" class="relative mx-auto w-full max-w-[1472px] scroll-mt-14 border-x border-t border-slate-200/80 px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <div class="mb-14"><p class="mb-5 text-xs font-semibold uppercase tracking-[0.14em] text-blue-700">05 / Dados</p><h2 class="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">Cards e exibicao de dados</h2></div>
+      <h3 class="mb-6 text-2xl font-semibold tracking-tight">5.1 Cards de indicadores</h3>
+      <div class="mb-14 grid gap-4 sm:grid-cols-3">
+        <div class="rounded-lg border border-slate-200 bg-white p-5"><p class="text-xs font-medium text-slate-400">Tarefas concluidas</p><p class="mt-2 text-2xl font-semibold tracking-tight">12</p><p class="mt-1 text-xs font-semibold text-emerald-600">Hoje</p></div>
+        <div class="rounded-lg border border-slate-200 bg-white p-5"><p class="text-xs font-medium text-slate-400">Tempo focado</p><p class="mt-2 text-2xl font-semibold tracking-tight">85 min</p><p class="mt-1 text-xs font-semibold text-blue-700">Esta semana</p></div>
+        <div class="rounded-lg border border-slate-200 bg-white p-5"><p class="text-xs font-medium text-slate-400">Rotinas ativas</p><p class="mt-2 text-2xl font-semibold tracking-tight">4</p><p class="mt-1 text-xs font-semibold text-slate-500">Em dia</p></div>
+      </div>
+      <h3 class="mb-6 text-2xl font-semibold tracking-tight">5.2 Card de dados com acoes</h3>
+      <div class="mb-14 grid gap-5 md:grid-cols-3">
+        <a href="#5" class="group flex items-center justify-between gap-6 rounded-[18px] border border-slate-200 bg-white/78 p-6 shadow-[0_12px_34px_rgba(15,23,42,0.035)] backdrop-blur transition hover:-translate-y-0.5 hover:border-slate-300"><div class="flex items-center gap-5"><span class="flex h-14 w-14 items-center justify-center rounded-full bg-blue-50 text-blue-700"><i data-lucide="workflow" class="h-6 w-6"></i></span><div><h3 class="text-base font-semibold text-[#06145b]">Planejamento rapido</h3><p class="mt-2 text-sm leading-5 text-slate-500">Transforme uma ideia em proxima acao.</p></div></div><span class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-50 text-slate-400 transition group-hover:bg-blue-700 group-hover:text-white"><i data-lucide="arrow-right" class="h-[18px] w-[18px]"></i></span></a>
+        <a href="#5" class="group flex items-center justify-between gap-6 rounded-[18px] border border-slate-200 bg-white/78 p-6 shadow-[0_12px_34px_rgba(15,23,42,0.035)] backdrop-blur transition hover:-translate-y-0.5 hover:border-slate-300"><div class="flex items-center gap-5"><span class="flex h-14 w-14 items-center justify-center rounded-full bg-blue-50 text-blue-700"><i data-lucide="calendar-days" class="h-6 w-6"></i></span><div><h3 class="text-base font-semibold text-[#06145b]">Rotina semanal</h3><p class="mt-2 text-sm leading-5 text-slate-500">Veja o que esta previsto para hoje.</p></div></div><span class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-50 text-slate-400 transition group-hover:bg-blue-700 group-hover:text-white"><i data-lucide="arrow-right" class="h-[18px] w-[18px]"></i></span></a>
+        <a href="#5" class="group flex items-center justify-between gap-6 rounded-[18px] border border-slate-200 bg-white/78 p-6 shadow-[0_12px_34px_rgba(15,23,42,0.035)] backdrop-blur transition hover:-translate-y-0.5 hover:border-slate-300"><div class="flex items-center gap-5"><span class="flex h-14 w-14 items-center justify-center rounded-full bg-blue-50 text-blue-700"><i data-lucide="chart-column" class="h-6 w-6"></i></span><div><h3 class="text-base font-semibold text-[#06145b]">Revisao de progresso</h3><p class="mt-2 text-sm leading-5 text-slate-500">Entenda seu ritmo sem excesso de graficos.</p></div></div><span class="flex h-9 w-9 items-center justify-center rounded-full bg-slate-50 text-slate-400 transition group-hover:bg-blue-700 group-hover:text-white"><i data-lucide="arrow-right" class="h-[18px] w-[18px]"></i></span></a>
+      </div>
+      <h3 class="mb-6 text-2xl font-semibold tracking-tight">5.3 Wrapper de grafico</h3>
+      <div class="max-w-xl rounded-[34px] border border-slate-200/80 bg-white p-4 shadow-[0_26px_70px_rgba(15,23,42,0.10)]">
+        <div class="rounded-[26px] border border-slate-200/70 bg-white/85 p-5 backdrop-blur-xl"><div class="mb-8 flex items-center justify-between"><div><p class="text-xs font-medium uppercase tracking-wide text-slate-400">Foco na semana</p><p class="mt-1 text-sm font-semibold text-blue-700">85 min</p></div><span class="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs text-blue-700">Atualizado</span></div><div class="flex h-40 items-end gap-3 rounded-[22px] bg-gradient-to-b from-transparent to-slate-50/90 px-4 pb-3"><span class="h-12 flex-1 rounded-t-xl bg-blue-100 anim-bar-1"></span><span class="h-20 flex-1 rounded-t-xl bg-blue-600 anim-bar-2"></span><span class="h-14 flex-1 rounded-t-xl bg-cyan-200 anim-bar-3"></span><span class="h-28 flex-1 rounded-t-xl bg-[#06145b] anim-bar-4"></span><span class="h-16 flex-1 rounded-t-xl bg-blue-200 anim-bar-5"></span></div></div>
+      </div>
+    </section>
+
+    <section id="6" class="relative mx-auto w-full max-w-[1472px] scroll-mt-14 border-x border-t border-slate-200/80 px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <div class="mb-14"><p class="mb-5 text-xs font-semibold uppercase tracking-[0.14em] text-blue-700">06 / Componentes</p><h2 class="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">Componentes de UI</h2></div>
+      <h3 class="mb-6 text-2xl font-semibold tracking-tight">6.1 Botoes e estados presentes</h3>
+      <div class="mb-8 grid gap-5 md:grid-cols-4">
+        <div><p class="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Padrao</p><a href="#6" class="inline-flex h-14 items-center rounded-[18px] bg-gradient-to-br from-[#2f6bff] via-[#2454f4] to-[#1237d8] px-7 text-[16px] font-semibold text-white shadow-[0_18px_38px_rgba(37,84,244,0.28)]">Comecar</a></div>
+        <div><p class="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Hover</p><a href="#6" class="inline-flex h-14 -translate-y-0.5 items-center rounded-[18px] bg-gradient-to-br from-[#2f6bff] via-[#2454f4] to-[#1237d8] px-7 text-[16px] font-semibold text-white shadow-[0_22px_48px_rgba(37,84,244,0.36)]">Comecar</a></div>
+        <div><p class="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Foco</p><a href="#6" class="inline-flex h-14 items-center rounded-[18px] bg-gradient-to-br from-[#2f6bff] via-[#2454f4] to-[#1237d8] px-7 text-[16px] font-semibold text-white ring-4 ring-blue-500/25 ring-offset-2">Comecar</a></div>
+        <div><p class="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">Ativo</p><a href="#6" class="inline-flex h-14 scale-[0.99] items-center rounded-[18px] bg-gradient-to-br from-[#2f6bff] via-[#2454f4] to-[#1237d8] px-7 text-[16px] font-semibold text-white shadow-[0_18px_38px_rgba(37,84,244,0.28)]">Comecar</a></div>
+      </div>
+      <div class="mb-14 flex flex-wrap gap-5"><a href="#6" class="group relative inline-flex h-14 items-center rounded-[18px] border border-[#d8e1f3] bg-gradient-to-b from-white to-[#f8fbff] pl-7 pr-3 text-[16px] font-semibold text-[#06145b] shadow-[0_14px_32px_rgba(15,23,42,0.07)] transition-all duration-300 hover:-translate-y-0.5"><span>Secundario</span><span class="ml-4 inline-flex h-11 w-11 items-center justify-center rounded-[14px] border border-[#dfe7f7] bg-white"><i data-lucide="calendar-days" class="h-5 w-5"></i></span></a><button class="inline-flex h-13 items-center gap-3 bg-blue-700 px-5 text-sm font-semibold text-white shadow-[0_18px_38px_rgba(29,78,216,0.22)] transition hover:-translate-y-0.5 hover:bg-blue-800">Compacto <i data-lucide="arrow-right" class="h-4 w-4"></i></button><button class="inline-flex h-11 w-11 items-center justify-center rounded-lg border border-slate-200 bg-white shadow-sm" aria-label="Abrir menu"><i data-lucide="menu" class="h-5 w-5"></i></button></div>
+      <h3 class="mb-6 text-2xl font-semibold tracking-tight">6.2 Badges e status pills</h3>
+      <div class="mb-14 flex flex-wrap gap-4"><span class="rounded-full border border-emerald-100 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-600">Ativo</span><span class="rounded-full border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-medium text-blue-700">Verificado</span><span class="rounded-full bg-slate-50 px-3 py-1 text-xs font-medium text-slate-500 ring-1 ring-slate-200">Entrada</span><span class="border border-white/15 bg-[#06145b] px-4 py-1.5 text-sm font-medium text-blue-50">Recomendado</span></div>
+      <h3 class="mb-6 text-2xl font-semibold tracking-tight">6.3 Avatar</h3>
+      <div class="flex items-center gap-4"><span class="flex h-12 w-12 items-center justify-center rounded-full bg-blue-50 text-sm font-semibold text-blue-700 ring-1 ring-slate-200 transition-all duration-500 hover:scale-110 hover:ring-blue-600/30" aria-label="Avatar do usuario">EU</span><div><p class="text-sm font-medium">Usuario ENGP</p><p class="text-sm text-slate-500">Produtividade pessoal</p></div></div>
+    </section>
+
+    <section id="7" class="relative mx-auto w-full max-w-[1472px] scroll-mt-14 border-x border-t border-slate-200/80 px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <div class="mb-14"><p class="mb-5 text-xs font-semibold uppercase tracking-[0.14em] text-blue-700">07 / Layout</p><h2 class="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">Layout e espacamento</h2></div>
+      <div class="mb-14 grid gap-5 md:grid-cols-2 lg:grid-cols-4"><div class="border border-slate-200 p-5"><p class="text-xs text-slate-400">Container maximo</p><p class="mt-2 text-2xl font-semibold">1600px</p></div><div class="border border-slate-200 p-5"><p class="text-xs text-slate-400">Gutter desktop</p><p class="mt-2 text-2xl font-semibold">64px</p></div><div class="border border-slate-200 p-5"><p class="text-xs text-slate-400">Gap da grade</p><p class="mt-2 text-2xl font-semibold">20px</p></div><div class="border border-slate-200 p-5"><p class="text-xs text-slate-400">Breakpoints</p><p class="mt-2 text-2xl font-semibold">sm / md / lg / xl</p></div></div>
+      <h3 class="mb-6 text-2xl font-semibold tracking-tight">Padroes reais</h3>
+      <div class="space-y-8">
+         <div class="border border-slate-200"><div class="border-b border-slate-200 px-6 py-4 text-xs font-semibold uppercase tracking-[0.12em] text-blue-700">Dashboard: barra lateral + indicadores + lista</div><div class="grid lg:grid-cols-[180px_1fr]"><aside class="border-r border-slate-200 bg-slate-50/60 p-4"><div class="h-9 rounded-lg border border-blue-200"></div><div class="mt-2 h-9 rounded-lg border border-transparent bg-white"></div></aside><div class="p-6"><div class="grid gap-4 sm:grid-cols-3"><div class="h-24 rounded-lg border border-slate-200"></div><div class="h-24 rounded-lg border border-slate-200"></div><div class="h-24 rounded-lg border border-slate-200"></div></div><div class="mt-4 h-32 rounded-lg border border-slate-200 bg-slate-50/60"></div></div></div></div>
+        <div class="border border-slate-200"><div class="border-b border-slate-200 px-6 py-4 text-xs font-semibold uppercase tracking-[0.12em] text-blue-700">Cards: 4 colunas para 1 coluna</div><div class="grid md:grid-cols-2 xl:grid-cols-4"><div class="min-h-40 border-b border-slate-200 p-8 md:border-r xl:border-b-0"></div><div class="min-h-40 border-b border-slate-200 p-8 xl:border-r xl:border-b-0"></div><div class="min-h-40 border-b border-slate-200 p-8 md:border-r xl:border-b-0"></div><div class="min-h-40 p-8"></div></div></div>
+         <div class="border border-slate-200"><div class="border-b border-slate-200 px-6 py-4 text-xs font-semibold uppercase tracking-[0.12em] text-blue-700">Formulario: campo fluido + acao automatica</div><div class="grid gap-3 p-8 sm:grid-cols-[1fr_auto]"><div class="h-13 border border-slate-200 bg-white"></div><div class="h-13 w-full bg-blue-700 sm:w-32"></div></div></div>
+      </div>
+    </section>
+
+    <section id="8" class="relative mx-auto w-full max-w-[1472px] scroll-mt-14 border-x border-t border-slate-200/80 px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <div class="mb-14"><p class="mb-5 text-xs font-semibold uppercase tracking-[0.14em] text-blue-700">08 / Movimento</p><h2 class="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">Movimento e interacao</h2></div>
+      <div class="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="flex h-48 flex-col items-center justify-center border border-slate-200"><span class="anim-float flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-700 text-white shadow-[0_12px_24px_rgba(37,99,235,0.22)]"><i data-lucide="sparkles" class="h-5 w-5"></i></span><p class="mt-6 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">float-soft / 4s</p></div>
+        <div class="flex h-48 flex-col items-center justify-center border border-slate-200"><span class="anim-pulse-soft flex h-14 w-14 items-center justify-center rounded-full bg-blue-600 text-white"><i data-lucide="check" class="h-5 w-5"></i></span><p class="mt-6 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">pulse-soft / 3s</p></div>
+        <div class="flex h-48 flex-col items-center justify-center border border-slate-200"><div class="w-28 space-y-3"><div class="anim-slide-x-1 h-2 w-24 rounded-full bg-slate-200"></div><div class="anim-slide-x-2 h-2 w-16 rounded-full bg-blue-200"></div><div class="anim-slide-x-3 h-2 w-20 rounded-full bg-blue-600"></div></div><p class="mt-6 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">slide-x-soft</p></div>
+         <div class="flex h-48 flex-col items-center justify-center border border-slate-200"><div class="cms-loading h-14 w-32">Carregando conteudo</div><p class="mt-6 text-xs font-semibold uppercase tracking-[0.12em] text-slate-400">cms-shimmer / 1.5s</p></div>
+      </div>
+      <div class="mt-5 overflow-hidden border border-slate-200 py-7"><div class="marquee flex w-max items-center gap-16 pr-16 text-sm font-semibold uppercase tracking-[0.12em] text-slate-400"><span>Movimento 40s linear</span><span>Sistema de movimento ENGP</span><span>Movimento 40s linear</span><span>Sistema de movimento ENGP</span><span>Movimento 40s linear</span><span>Sistema de movimento ENGP</span></div></div>
+      <div class="mt-5 grid gap-5 md:grid-cols-2"><a href="#8" class="group flex items-center justify-between border border-slate-200 p-6 transition-all duration-500 hover:-translate-y-2 hover:scale-[1.02] hover:border-blue-600 hover:shadow-[0_28px_80px_rgba(37,99,235,0.16)]"><span class="text-sm font-semibold">Hover de card / 500ms ease-out</span><i data-lucide="arrow-up-right" class="h-5 w-5 text-blue-700"></i></a><details class="group border border-slate-200 p-6"><summary class="flex cursor-pointer list-none items-center justify-between"><span class="text-sm font-semibold">Rotacao do accordion</span><span class="text-3xl font-light text-blue-700 transition group-open:rotate-45">+</span></summary><p class="mt-4 text-sm leading-6 text-slate-500">Abertura nativa com rotacao do icone.</p></details></div>
+    </section>
+
+    <section id="9" class="relative mx-auto mb-20 w-full max-w-[1472px] scroll-mt-14 border border-slate-200/80 px-6 py-20 sm:px-10 lg:px-16 lg:py-24">
+      <div class="mb-14"><p class="mb-5 text-xs font-semibold uppercase tracking-[0.14em] text-blue-700">09 / Ativos</p><h2 class="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl">Icones</h2><p class="mt-6 max-w-2xl text-base leading-7 text-slate-500">Lucide, com stroke padrao de 1.5, complementado por SVGs inline de marca quando necessario.</p></div>
+      <div class="grid grid-cols-2 border-l border-t border-slate-200 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="menu" class="h-5 w-5 text-slate-950"></i><p class="mt-4 text-xs text-slate-500">menu</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="sparkles" class="h-5 w-5 text-blue-700"></i><p class="mt-4 text-xs text-slate-500">sparkles</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="scan-search" class="h-5 w-5 text-blue-700"></i><p class="mt-4 text-xs text-slate-500">scan-search</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="brain-circuit" class="h-5 w-5"></i><p class="mt-4 text-xs text-slate-500">brain-circuit</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="wallet" class="h-5 w-5"></i><p class="mt-4 text-xs text-slate-500">wallet</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="radar" class="h-5 w-5"></i><p class="mt-4 text-xs text-slate-500">radar</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="plug-zap" class="h-5 w-5"></i><p class="mt-4 text-xs text-slate-500">plug-zap</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="check" class="h-5 w-5 text-emerald-600"></i><p class="mt-4 text-xs text-slate-500">check</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="file-search" class="h-5 w-5"></i><p class="mt-4 text-xs text-slate-500">file-search</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="wallet-cards" class="h-5 w-5"></i><p class="mt-4 text-xs text-slate-500">wallet-cards</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="workflow" class="h-5 w-5"></i><p class="mt-4 text-xs text-slate-500">workflow</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="arrow-right" class="h-5 w-5"></i><p class="mt-4 text-xs text-slate-500">arrow-right</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="landmark" class="h-5 w-5"></i><p class="mt-4 text-xs text-slate-500">landmark</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="file-plus-2" class="h-5 w-5"></i><p class="mt-4 text-xs text-slate-500">file-plus-2</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="briefcase-business" class="h-5 w-5"></i><p class="mt-4 text-xs text-slate-500">briefcase</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="badge-dollar-sign" class="h-5 w-5"></i><p class="mt-4 text-xs text-slate-500">badge-dollar</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="user" class="h-5 w-5"></i><p class="mt-4 text-xs text-slate-500">user</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="quote" class="h-5 w-5 text-blue-700"></i><p class="mt-4 text-xs text-slate-500">quote</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="circle-help" class="h-5 w-5"></i><p class="mt-4 text-xs text-slate-500">help-circle</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="chevron-right" class="h-5 w-5"></i><p class="mt-4 text-xs text-slate-500">chevron-right</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="shield" class="h-5 w-5 text-blue-700"></i><p class="mt-4 text-xs text-slate-500">shield</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="monitor" class="h-5 w-5 text-blue-700"></i><p class="mt-4 text-xs text-slate-500">monitor</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="tag" class="h-5 w-5 text-blue-700"></i><p class="mt-4 text-xs text-slate-500">tag</p></div>
+        <div class="border-b border-r border-slate-200 p-5"><i data-lucide="credit-card" class="h-5 w-5"></i><p class="mt-4 text-xs text-slate-500">credit-card</p></div>
+      </div>
+      <div class="mt-8 flex items-end gap-8 border border-slate-200 p-6"><div><i data-lucide="sparkles" class="h-4 w-4 text-blue-700"></i><p class="mt-3 text-xs text-slate-500">16px</p></div><div><i data-lucide="sparkles" class="h-6 w-6 text-blue-700"></i><p class="mt-3 text-xs text-slate-500">24px</p></div><div><i data-lucide="sparkles" class="h-8 w-8 text-blue-700"></i><p class="mt-3 text-xs text-slate-500">32px</p></div></div>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script>
+    lucide.createIcons({ attrs: { "stroke-width": 1.5 } });
+    document.addEventListener("DOMContentLoaded", function () {
+      gsap.registerPlugin(ScrollTrigger);
+      document.querySelectorAll("main section > div > h2, main section > div > div > h2").forEach(function (heading) {
+        gsap.fromTo(heading, { y: 40, opacity: 0, filter: "blur(8px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 1, ease: "power2.out", scrollTrigger: { trigger: heading, start: "top 85%", toggleActions: "play none none none" } });
+      });
+    });
+  </script>
+</body>
+</html>
