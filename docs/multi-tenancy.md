@@ -6,7 +6,7 @@ O ENGP usa banco e schema compartilhados. `Workspace` é o tenant raiz e `Worksp
 
 Uma membership possui unicidade por `(workspace, user)`, papel validado por constraint e índices para consultas por workspace, usuário e status ativo.
 
-`WorkspaceMembership.user` usa `settings.AUTH_USER_MODEL` desde já. A Sprint 4 ainda precisa criar o `accounts.User` customizado e definir `AUTH_USER_MODEL` antes de estabelecer uma migration baseline para produção; o banco SQLite local desta fundação é descartável.
+`WorkspaceMembership.user` usa `settings.AUTH_USER_MODEL` desde já. O `accounts.User` customizado usa e-mail normalizado como identificador; uma base SQLite criada antes da Sprint 4 precisa ser recriada ou migrada explicitamente antes de uso, pois a troca de usuário customizado altera a dependência inicial do Django.
 
 ## Resolução durante a request
 

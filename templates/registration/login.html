@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}Entrar | ENGP{% endblock %}
+
+{% block body %}
+<main class="auth-shell">
+  <section class="auth-visual" aria-label="Sobre o ENGP">
+    <div class="auth-visual-content">
+      <div>
+        {% include 'registration/_brand.html' %}
+        <div class="auth-visual-copy">
+          <p class="eyebrow">Produtividade pessoal</p>
+          <h1>Organize seu dia com <span>clareza.</span></h1>
+          <p>Capture o que importa, escolha a próxima ação e mantenha seu foco em um fluxo simples.</p>
+        </div>
+      </div>
+      <div class="auth-visual-note">Um workspace pessoal para transformar compromissos, objetivos e responsabilidades em execução.</div>
+    </div>
+  </section>
+
+  <section class="auth-content">
+    <div class="auth-content-inner">
+      {% include 'registration/_brand.html' %}
+      <div class="auth-heading">
+        <p class="eyebrow">Bem-vindo de volta</p>
+        <h1>Entre para continuar.</h1>
+        <p>Retome suas tarefas e sua próxima sessão de foco.</p>
+      </div>
+
+      {% include 'registration/_messages.html' %}
+      <div class="auth-card">
+        {% if form.non_field_errors %}
+          <div class="form-error" role="alert">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <form method="post" novalidate>
+          {% csrf_token %}
+          {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+          <div class="form-grid">
+            <div class="field">
+              {{ form.email.label_tag }}
+              {{ form.email }}
+              {{ form.email.errors }}
+            </div>
+            <div class="field">
+              <div class="field-inline">
+                {{ form.password.label_tag }}
+                <a class="text-link" href="{% url 'accounts:password_reset' %}">Esqueci minha senha</a>
+              </div>
+              {{ form.password }}
+              {{ form.password.errors }}
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="primary-button" type="submit">Entrar</button>
+          </div>
+        </form>
+        <div class="auth-links">
+          <span>Ainda não tem uma conta?</span>
+          <a class="text-link" href="{% url 'accounts:signup' %}">Criar conta</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

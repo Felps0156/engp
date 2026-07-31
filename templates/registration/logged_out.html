@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Você saiu | ENGP{% endblock %}
+
+{% block body %}
+<main class="auth-shell">
+  <section class="auth-visual" aria-label="Sessão encerrada">
+    <div class="auth-visual-content">
+      {% include 'registration/_brand.html' %}
+      <div class="auth-visual-copy">
+        <p class="eyebrow">Até logo</p>
+        <h1>Seu espaço continua <span>esperando.</span></h1>
+        <p>Quando quiser voltar, suas tarefas e seu foco estarão no mesmo lugar.</p>
+      </div>
+    </div>
+  </section>
+  <section class="auth-content">
+    <div class="auth-content-inner">
+      {% include 'registration/_brand.html' %}
+      {% include 'registration/_messages.html' %}
+      <div class="auth-heading">
+        <p class="eyebrow">Sessão encerrada</p>
+        <h1>Você saiu do ENGP.</h1>
+        <p>Até a próxima sessão.</p>
+      </div>
+      <div class="auth-card">
+        <a class="primary-button" href="{% url 'accounts:login' %}">Entrar novamente</a>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

@@ -56,6 +56,8 @@ LOCAL_APPS = [
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS
 
+AUTH_USER_MODEL = 'accounts.User'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -124,7 +126,7 @@ USE_TZ = True
 
 STATIC_URL = env('STATIC_URL', default='static/')
 STATIC_ROOT = Path(env('STATIC_ROOT', default=str(BASE_DIR / 'staticfiles')))
-STATICFILES_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [BASE_DIR / 'static', BASE_DIR / 'design_system']
 MEDIA_URL = env('MEDIA_URL', default='media/')
 MEDIA_ROOT = Path(env('MEDIA_ROOT', default=str(BASE_DIR / 'media')))
 
@@ -137,6 +139,9 @@ DEFAULT_FROM_EMAIL = env(
     'DEFAULT_FROM_EMAIL',
     default='ENGP <no-reply@localhost>',
 )
+LOGIN_URL = 'accounts:login'
+LOGIN_REDIRECT_URL = 'accounts:home'
+LOGOUT_REDIRECT_URL = 'accounts:login'
 
 
 LOG_LEVEL = env('DJANGO_LOG_LEVEL', default='INFO').upper()

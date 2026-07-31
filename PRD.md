@@ -2592,19 +2592,19 @@ Integrações de calendário, equipes, relatórios avançados e aplicativos móv
 
 ### Sprint 4 — Usuário e autenticação
 
-- [ ] Criar User antes da primeira migration definitiva.
-- [ ] Remover username.
-- [ ] Criar UserManager.
-- [ ] Configurar `AUTH_USER_MODEL`.
-- [ ] Criar backend de e-mail se necessário.
-- [ ] Criar cadastro atômico.
-- [ ] Criar workspace pessoal no cadastro.
-- [ ] Criar membership owner.
-- [ ] Criar login.
-- [ ] Criar logout POST.
-- [ ] Configurar recuperação de senha.
-- [ ] Configurar mensagens.
-- [ ] Criar páginas conforme design system.
+- [x] Criar User antes da primeira migration definitiva.
+- [x] Remover username.
+- [x] Criar UserManager.
+- [x] Configurar `AUTH_USER_MODEL`.
+- [x] Usar o backend nativo do Django para autenticação por e-mail; backend customizado não é necessário.
+- [x] Criar cadastro atômico.
+- [x] Criar workspace pessoal no cadastro.
+- [x] Criar membership owner.
+- [x] Criar login.
+- [x] Criar logout POST.
+- [x] Configurar recuperação de senha.
+- [x] Configurar mensagens.
+- [x] Criar páginas conforme design system.
 
 ### Sprint 5 — Configurações do usuário
 

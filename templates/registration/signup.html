@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Criar conta | ENGP{% endblock %}
+
+{% block body %}
+<main class="auth-shell">
+  <section class="auth-visual" aria-label="Sobre o ENGP">
+    <div class="auth-visual-content">
+      <div>
+        {% include 'registration/_brand.html' %}
+        <div class="auth-visual-copy">
+          <p class="eyebrow">Seu ponto de partida</p>
+          <h1>Mais clareza para a <span>próxima ação.</span></h1>
+          <p>Seu workspace pessoal já nasce pronto para organizar tarefas, rotina e foco no seu ritmo.</p>
+        </div>
+      </div>
+      <div class="auth-visual-note">Comece com o essencial. O restante pode ser construído quando fizer sentido.</div>
+    </div>
+  </section>
+
+  <section class="auth-content">
+    <div class="auth-content-inner">
+      {% include 'registration/_brand.html' %}
+      <div class="auth-heading">
+        <p class="eyebrow">Comece com clareza</p>
+        <h1>Crie sua conta.</h1>
+        <p>Seu workspace pessoal será criado automaticamente.</p>
+      </div>
+
+      {% include 'registration/_messages.html' %}
+      <div class="auth-card">
+        {% if form.non_field_errors %}
+          <div class="form-error" role="alert">{{ form.non_field_errors }}</div>
+        {% endif %}
+        <form method="post" novalidate>
+          {% csrf_token %}
+          <div class="form-grid two-columns">
+            <div class="field">
+              {{ form.first_name.label_tag }}
+              {{ form.first_name }}
+              {{ form.first_name.errors }}
+            </div>
+            <div class="field">
+              {{ form.last_name.label_tag }}
+              {{ form.last_name }}
+              {{ form.last_name.errors }}
+            </div>
+          </div>
+          <div class="form-grid spaced">
+            <div class="field">
+              {{ form.email.label_tag }}
+              {{ form.email }}
+              {{ form.email.errors }}
+            </div>
+            <div class="field">
+              {{ form.password1.label_tag }}
+              {{ form.password1 }}
+              <span class="field-help">Use uma senha longa e exclusiva para sua conta.</span>
+              {{ form.password1.errors }}
+            </div>
+            <div class="field">
+              {{ form.password2.label_tag }}
+              {{ form.password2 }}
+              {{ form.password2.errors }}
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="primary-button" type="submit">Criar minha conta</button>
+          </div>
+        </form>
+        <div class="auth-links">
+          <span>Já possui uma conta?</span>
+          <a class="text-link" href="{% url 'accounts:login' %}">Entrar</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}
