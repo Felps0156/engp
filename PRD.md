@@ -2633,17 +2633,17 @@ Integrações de calendário, equipes, relatórios avançados e aplicativos móv
 
 ### Sprint 7 — Onboarding
 
-- [ ] Criar rota e controle de acesso.
-- [ ] Criar etapa nome.
-- [ ] Criar etapa áreas.
-- [ ] Criar etapa foco padrão.
-- [ ] Criar etapa primeira tarefa.
-- [ ] Criar etapa rotina opcional.
-- [ ] Persistir progresso.
-- [ ] Implementar pular.
-- [ ] Marcar conclusão.
-- [ ] Evitar repetição.
-- [ ] Criar tela final.
+- [x] Criar rota e controle de acesso.
+- [x] Criar etapa nome.
+- [x] Criar etapa áreas.
+- [x] Criar etapa foco padrão.
+- [x] Criar etapa primeira tarefa.
+- [x] Criar etapa rotina opcional.
+- [x] Persistir progresso.
+- [x] Implementar pular.
+- [x] Marcar conclusão.
+- [x] Evitar repetição.
+- [x] Criar tela final.
 
 ### Sprint 8 — Model de tarefas
 

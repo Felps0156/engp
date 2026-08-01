@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}Seu ponto de partida | ENGP{% endblock %}
+
+{% block body %}
+<main class="onboarding-shell onboarding-final-shell">
+  <header class="onboarding-header">
+    {% include 'registration/_brand.html' %}
+    <span class="onboarding-step-count">Ponto de partida</span>
+  </header>
+
+  <section class="onboarding-main onboarding-final-main">
+    <div class="onboarding-card onboarding-final-card">
+      <span class="onboarding-success-mark" aria-hidden="true">✓</span>
+      <p class="eyebrow">Seu workspace pessoal</p>
+      {% if progress.is_skipped %}
+        <h1>Você pode começar quando quiser.</h1>
+        <p class="onboarding-final-intro">O essencial já está salvo. O restante pode ser construído no seu ritmo.</p>
+      {% else %}
+        <h1>Seu próximo passo está mais claro.</h1>
+        <p class="onboarding-final-intro">Seu workspace já tem contexto suficiente para você sair da configuração e entrar em ação.</p>
+      {% endif %}
+
+      <div class="onboarding-summary-grid">
+        {% if categories %}
+          <section class="onboarding-summary-card" aria-labelledby="summary-areas-heading">
+            <p class="onboarding-summary-kicker">Áreas</p>
+            <h2 id="summary-areas-heading">O que importa para você</h2>
+            <div class="onboarding-summary-pills">
+              {% for category in categories %}<span>{{ category.name }}</span>{% endfor %}
+            </div>
+          </section>
+        {% endif %}
+        {% if first_task %}
+          <section class="onboarding-summary-card" aria-labelledby="summary-task-heading">
+            <p class="onboarding-summary-kicker">Primeira tarefa</p>
+            <h2 id="summary-task-heading">{{ first_task.title }}</h2>
+            <p>Capturada como uma ação de origem onboarding.</p>
+          </section>
+        {% endif %}
+        {% if routine and routine.title %}
+          <section class="onboarding-summary-card" aria-labelledby="summary-routine-heading">
+            <p class="onboarding-summary-kicker">Rotina opcional</p>
+            <h2 id="summary-routine-heading">{{ routine.title }}</h2>
+            <p>Seu ritmo semanal foi guardado para a próxima etapa do produto.</p>
+          </section>
+        {% endif %}
+      </div>
+
+      {% if user_settings.onboarding_completed %}
+        <a class="primary-button onboarding-final-action" href="{% url 'accounts:home' %}">Ir para meu workspace</a>
+      {% else %}
+        <form method="post" action="{% url 'onboarding:complete' %}">
+          {% csrf_token %}
+          <button class="primary-button onboarding-final-action" type="submit">Concluir e entrar no workspace</button>
+        </form>
+      {% endif %}
+    </div>
+  </section>
+</main>
+{% endblock %}

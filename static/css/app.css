@@ -868,6 +868,454 @@ a {
   width: auto;
 }
 
+.onboarding-shell {
+  min-height: 100dvh;
+  background:
+    radial-gradient(circle at 90% 0%, var(--color-surface-tint), transparent 28rem),
+    var(--color-surface-subtle);
+}
+
+.onboarding-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 3.5rem;
+  padding: 0 1.25rem;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-glass);
+  backdrop-filter: blur(18px);
+}
+
+.onboarding-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.onboarding-header-actions form {
+  margin: 0;
+}
+
+.onboarding-step-count {
+  color: var(--color-text-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.onboarding-skip-button {
+  padding: 0.45rem 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-brand-700);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.onboarding-skip-button:hover,
+.onboarding-skip-button:focus-visible {
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+.onboarding-main {
+  display: grid;
+  gap: 1.5rem;
+  width: min(100% - 2.5rem, 66rem);
+  margin: 0 auto;
+  padding: 2rem 0 4rem;
+}
+
+.onboarding-progress {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.onboarding-progress-track {
+  height: 0.35rem;
+  overflow: hidden;
+  border-radius: var(--radius-pill);
+  background: var(--color-border);
+}
+
+.onboarding-progress-track span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--color-brand-gradient);
+  transition: width var(--motion-card) var(--motion-ease);
+}
+
+.onboarding-progress-list {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.onboarding-progress-item {
+  min-width: 0;
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  font-weight: 600;
+}
+
+.onboarding-progress-item a,
+.onboarding-progress-item > span {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.onboarding-progress-item a:hover,
+.onboarding-progress-item a:focus-visible {
+  color: var(--color-brand-700);
+}
+
+.onboarding-progress-number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 1.45rem;
+  height: 1.45rem;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  background: var(--color-surface-elevated);
+  font-size: 0.68rem;
+}
+
+.onboarding-progress-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.onboarding-progress-item.current {
+  color: var(--color-brand-700);
+}
+
+.onboarding-progress-item.current .onboarding-progress-number,
+.onboarding-progress-item.completed .onboarding-progress-number {
+  border-color: var(--color-brand-600);
+  background: var(--color-surface-tint);
+  color: var(--color-brand-700);
+}
+
+.onboarding-card {
+  width: min(100%, 48rem);
+  margin: 0 auto;
+  padding: 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-2xl);
+  background: var(--color-surface-elevated);
+  box-shadow: var(--shadow-dashboard);
+}
+
+.onboarding-heading {
+  max-width: 42rem;
+  margin-bottom: 2rem;
+}
+
+.onboarding-heading h1,
+.onboarding-final-card h1 {
+  margin: 0;
+  color: var(--color-text-primary);
+  font-size: clamp(2.25rem, 7vw, 3.65rem);
+  font-weight: 600;
+  letter-spacing: -0.065em;
+  line-height: 1.03;
+}
+
+.onboarding-heading > p:last-child,
+.onboarding-final-intro {
+  max-width: 38rem;
+  margin: 1rem 0 0;
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.onboarding-form {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.onboarding-form .field input,
+.onboarding-form .field textarea {
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.7rem;
+  background: var(--color-surface-input);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: 0.95rem;
+  outline: none;
+  resize: vertical;
+  transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+
+.onboarding-form .field textarea {
+  min-height: 7rem;
+  line-height: 1.5;
+}
+
+.onboarding-form .field input:focus,
+.onboarding-form .field textarea:focus {
+  border-color: var(--color-brand-600);
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
+}
+
+.onboarding-fieldset {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.onboarding-fieldset legend {
+  margin-bottom: 0.45rem;
+  color: var(--color-text-strong);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.onboarding-choice-grid,
+.onboarding-weekday-grid {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.onboarding-choice-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.onboarding-choice {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-width: 0;
+  min-height: 3.4rem;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-elevated);
+  color: var(--color-text-strong);
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: border-color var(--motion-standard) var(--motion-ease), background var(--motion-standard) var(--motion-ease), transform var(--motion-standard) var(--motion-ease);
+}
+
+.onboarding-choice:hover {
+  border-color: var(--color-border-brand);
+  transform: translateY(-1px);
+}
+
+.onboarding-choice input {
+  flex: 0 0 auto;
+  width: 1.15rem;
+  height: 1.15rem;
+  accent-color: var(--color-brand-600);
+}
+
+.onboarding-choice input:checked + span {
+  color: var(--color-brand-700);
+  font-weight: 600;
+}
+
+.onboarding-weekday-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.onboarding-day-choice {
+  min-height: 2.9rem;
+  padding: 0.65rem 0.8rem;
+  font-size: 0.82rem;
+}
+
+.onboarding-focus-choice {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.onboarding-focus-value {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.onboarding-focus-value label {
+  color: var(--color-text-strong);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.onboarding-focus-value input {
+  width: 100%;
+  min-height: 4.5rem;
+  padding: 0 1rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-input);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: 2rem;
+  font-weight: 600;
+  outline: none;
+  transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+
+.onboarding-focus-value input:focus {
+  border-color: var(--color-brand-600);
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
+}
+
+.onboarding-focus-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.8rem;
+  padding: 1rem;
+  border: 1px solid var(--color-border-brand);
+  border-radius: var(--radius-md);
+  background: var(--color-surface-tint);
+}
+
+.onboarding-focus-note p {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.onboarding-note-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.7rem;
+  background: var(--color-brand-700);
+  color: #ffffff;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.onboarding-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.onboarding-form-actions .primary-button,
+.onboarding-form-actions .secondary-button {
+  width: auto;
+}
+
+.onboarding-form-actions .secondary-button {
+  min-height: 3.35rem;
+}
+
+.onboarding-final-main {
+  padding-top: 4rem;
+}
+
+.onboarding-final-card {
+  text-align: center;
+}
+
+.onboarding-final-card .eyebrow {
+  margin-top: 1.5rem;
+}
+
+.onboarding-final-intro {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.onboarding-success-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 1.25rem;
+  background: var(--color-brand-700);
+  color: #ffffff;
+  font-size: 1.8rem;
+  font-weight: 500;
+  box-shadow: var(--shadow-blue);
+}
+
+.onboarding-summary-grid {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 2rem;
+  text-align: left;
+}
+
+.onboarding-summary-card {
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface-subtle);
+}
+
+.onboarding-summary-kicker {
+  margin: 0 0 0.45rem;
+  color: var(--color-brand-700);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.onboarding-summary-card h2 {
+  margin: 0;
+  color: var(--color-text-strong);
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.onboarding-summary-card p:last-child {
+  margin: 0.45rem 0 0;
+  color: var(--color-text-secondary);
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.onboarding-summary-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.onboarding-summary-pills span {
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--color-border-brand);
+  border-radius: var(--radius-pill);
+  background: var(--color-surface-tint);
+  color: var(--color-brand-700);
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.onboarding-final-action {
+  width: auto;
+  margin-top: 2rem;
+}
+
 .sr-only {
   position: absolute;
   width: 1px;
@@ -929,6 +1377,22 @@ a {
   .category-form-card {
     padding: 2.25rem;
   }
+
+  .onboarding-header {
+    padding: 0 2.5rem;
+  }
+
+  .onboarding-main {
+    padding-top: 3rem;
+  }
+
+  .onboarding-card {
+    padding: 2.5rem;
+  }
+
+  .onboarding-weekday-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 @media (min-width: 1024px) {
@@ -954,6 +1418,24 @@ a {
 
   .category-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .onboarding-header {
+    padding: 0 4rem;
+  }
+
+  .onboarding-main {
+    padding-top: 4rem;
+  }
+
+  .onboarding-focus-choice {
+    grid-template-columns: minmax(12rem, 0.7fr) minmax(0, 1fr);
+    align-items: center;
+  }
+
+  .onboarding-summary-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    text-align: left;
   }
 }
 

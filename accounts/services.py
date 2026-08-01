@@ -6,6 +6,7 @@ from django.db import transaction
 from django.utils.text import slugify
 
 from categories.services import create_default_categories
+from onboarding.models import OnboardingProgress
 from tenants.models import Workspace, WorkspaceMembership
 
 from .models import User, UserSettings
@@ -36,6 +37,7 @@ def create_account(*, email, password, first_name='', last_name=''):
     )
     UserSettings.objects.create(user=user)
     create_default_categories(workspace=workspace)
+    OnboardingProgress.objects.create(user=user)
     return user, workspace
 
 

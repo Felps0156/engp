@@ -12,7 +12,7 @@ from django.contrib.auth.views import PasswordResetView
 from django.contrib.auth.views import PasswordResetCompleteView
 from django.db import IntegrityError, transaction
 from django.shortcuts import redirect, render
-from django.urls import reverse_lazy
+from django.urls import reverse, reverse_lazy
 from django.views.generic import FormView, TemplateView
 
 from .forms import (
@@ -55,6 +55,12 @@ class LoginView(DjangoLoginView):
     authentication_form = EmailAuthenticationForm
     template_name = 'registration/login.html'
     redirect_authenticated_user = True
+
+    def get_success_url(self):
+        user_settings = get_or_create_user_settings(user=self.request.user)
+        if not user_settings.onboarding_completed:
+            return reverse('onboarding:start')
+        return super().get_success_url()
 
     def form_valid(self, form):
         user = form.get_user()
@@ -106,7 +112,11 @@ class AccountPasswordResetCompleteView(PasswordResetCompleteView):
 
 @login_required
 def account_home(request):
-    '''Provide a stable post-login landing until the dashboard sprint.'''
+    '''Send users through onboarding before showing the account landing page.'''
+
+    user_settings = get_or_create_user_settings(user=request.user)
+    if not user_settings.onboarding_completed:
+        return redirect('onboarding:start')
 
     return render(request, 'accounts/home.html')
 

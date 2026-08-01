@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ step_title }} | ENGP{% endblock %}
+
+{% block body %}
+<main class="onboarding-shell">
+  <header class="onboarding-header">
+    {% include 'registration/_brand.html' %}
+    <div class="onboarding-header-actions">
+      <span class="onboarding-step-count">Etapa {{ step_number }} de {{ total_steps }}</span>
+      <form method="post" action="{% url 'onboarding:skip' %}">
+        {% csrf_token %}
+        <button class="onboarding-skip-button" type="submit">Pular por agora</button>
+      </form>
+    </div>
+  </header>
+
+  <section class="onboarding-main">
+    <div class="onboarding-progress" aria-label="Progresso do onboarding">
+      <div class="onboarding-progress-track" aria-hidden="true">
+        <span style="width: {{ progress_percent }}%;"></span>
+      </div>
+      <ol class="onboarding-progress-list">
+        {% for item in progress_items %}
+          <li class="onboarding-progress-item {{ item.state }}">
+            {% if item.can_visit %}
+              <a href="{{ item.url }}" aria-label="{{ item.number }}. {{ item.label }}">
+                <span class="onboarding-progress-number">{{ item.number }}</span>
+                <span class="onboarding-progress-label">{{ item.label }}</span>
+              </a>
+            {% else %}
+              <span>
+                <span class="onboarding-progress-number">{{ item.number }}</span>
+                <span class="onboarding-progress-label">{{ item.label }}</span>
+              </span>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ol>
+    </div>
+
+    <div class="onboarding-card">
+      <div class="onboarding-heading">
+        <p class="eyebrow">{{ step_kicker }}</p>
+        <h1>{{ step_title }}</h1>
+        <p>{{ step_description }}</p>
+      </div>
+
+      {% include 'registration/_messages.html' %}
+      {% if form.non_field_errors %}
+        <div class="form-error" role="alert">{{ form.non_field_errors }}</div>
+      {% endif %}
+
+      <form class="onboarding-form" method="post" novalidate>
+        {% csrf_token %}
+
+        {% if onboarding_step == 'name' %}
+          <div class="form-grid two-columns">
+            <div class="field">
+              {{ form.first_name.label_tag }}
+              {{ form.first_name }}
+              {{ form.first_name.errors }}
+            </div>
+            <div class="field">
+              {{ form.last_name.label_tag }}
+              {{ form.last_name }}
+              {{ form.last_name.errors }}
+            </div>
+          </div>
+        {% elif onboarding_step == 'areas' %}
+          <fieldset class="onboarding-fieldset">
+            <legend>{{ form.areas.label }}</legend>
+            <p class="field-help">Selecione as áreas que você quer ver representadas no seu workspace.</p>
+            <div class="onboarding-choice-grid">
+              {% for choice in form.areas %}
+                <label class="onboarding-choice">
+                  {{ choice.tag }}
+                  <span>{{ choice.choice_label }}</span>
+                </label>
+              {% endfor %}
+            </div>
+            {{ form.areas.errors }}
+          </fieldset>
+          <div class="field">
+            {{ form.custom_areas.label_tag }}
+            {{ form.custom_areas }}
+            <span class="field-help">Áreas existentes serão reutilizadas, sem criar duplicatas.</span>
+            {{ form.custom_areas.errors }}
+          </div>
+        {% elif onboarding_step == 'focus' %}
+          <div class="onboarding-focus-choice">
+            <div class="onboarding-focus-value">
+              {{ form.default_focus_minutes.label_tag }}
+              {{ form.default_focus_minutes }}
+              {{ form.default_focus_minutes.errors }}
+            </div>
+            <div class="onboarding-focus-note">
+              <span class="onboarding-note-mark" aria-hidden="true">25</span>
+              <p>O ponto de partida mais comum. Escolha o tempo que parece possível hoje, não o ideal.</p>
+            </div>
+          </div>
+          {% if form.default_focus_minutes.help_text %}<span class="field-help">{{ form.default_focus_minutes.help_text }}</span>{% endif %}
+        {% elif onboarding_step == 'task' %}
+          <div class="field">
+            {{ form.title.label_tag }}
+            {{ form.title }}
+            {{ form.title.errors }}
+          </div>
+          <div class="field">
+            {{ form.description.label_tag }}
+            {{ form.description }}
+            {{ form.description.errors }}
+          </div>
+        {% elif onboarding_step == 'routine' %}
+          <div class="field">
+            {{ form.title.label_tag }}
+            {{ form.title }}
+            <span class="field-help">Deixe em branco para configurar sua rotina depois.</span>
+            {{ form.title.errors }}
+          </div>
+          <fieldset class="onboarding-fieldset">
+            <legend>{{ form.weekdays.label }}</legend>
+            <div class="onboarding-weekday-grid">
+              {% for choice in form.weekdays %}
+                <label class="onboarding-choice onboarding-day-choice">
+                  {{ choice.tag }}
+                  <span>{{ choice.choice_label }}</span>
+                </label>
+              {% endfor %}
+            </div>
+            {{ form.weekdays.errors }}
+          </fieldset>
+          <div class="form-grid two-columns">
+            <div class="field">
+              {{ form.scheduled_time.label_tag }}
+              {{ form.scheduled_time }}
+              {{ form.scheduled_time.errors }}
+            </div>
+            <div class="field">
+              {{ form.estimated_minutes.label_tag }}
+              {{ form.estimated_minutes }}
+              {{ form.estimated_minutes.errors }}
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="onboarding-form-actions">
+          {% if previous_url %}<a class="secondary-button" href="{{ previous_url }}">Voltar</a>{% endif %}
+          <button class="primary-button" type="submit">{{ submit_label }}</button>
+        </div>
+      </form>
+    </div>
+  </section>
+</main>
+{% endblock %}
