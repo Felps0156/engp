@@ -2647,15 +2647,15 @@ Integrações de calendário, equipes, relatórios avançados e aplicativos móv
 
 ### Sprint 8 — Model de tarefas
 
-- [ ] Criar Task.
-- [ ] Criar choices de status e prioridade.
-- [ ] Criar constraints e índices.
-- [ ] Criar migration.
-- [ ] Criar forms tenant-aware.
-- [ ] Criar service de conclusão.
-- [ ] Criar service de reabertura.
-- [ ] Criar validação de categoria.
-- [ ] Criar admin filtrado.
+- [x] Criar Task.
+- [x] Criar choices de status e prioridade.
+- [x] Criar constraints e índices.
+- [x] Criar migration.
+- [x] Criar forms tenant-aware.
+- [x] Criar service de conclusão.
+- [x] Criar service de reabertura.
+- [x] Criar validação de categoria.
+- [x] Criar admin filtrado.
 
 ### Sprint 9 — Interface de tarefas
 
