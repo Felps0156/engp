@@ -2050,6 +2050,28 @@ a {
   }
 }
 
+.task-card[draggable='true'] {
+  cursor: grab;
+}
+
+.task-card.is-dragging,
+.task-card.is-dragging:hover {
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-sm);
+  cursor: grabbing;
+  opacity: 1;
+  transform: none;
+}
+
+.task-drop-indicator {
+  height: 0.16rem;
+  margin: 0.2rem 0;
+  border-radius: var(--radius-pill);
+  background: var(--color-brand-600);
+  opacity: 0.65;
+  transition: opacity 120ms ease-out;
+}
+
 @media (max-width: 639px) {
   .tasks-page .account-header {
     flex-wrap: wrap;
@@ -2765,5 +2787,176 @@ a {
   *::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* Keep the task board contained in the workspace viewport. */
+.tasks-page {
+  overflow-x: hidden;
+}
+
+.task-column-capture-form {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.4rem;
+  margin-top: 0.75rem;
+}
+
+.task-column-capture-form input {
+  min-width: 0;
+  min-height: 2.15rem;
+  padding: 0 0.65rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.55rem;
+  background: var(--color-surface-input);
+  color: var(--color-text-primary);
+  font: inherit;
+  font-size: 0.72rem;
+  outline: none;
+}
+
+.task-column-capture-form input::placeholder {
+  color: var(--color-text-muted);
+}
+
+.task-column-capture-form input:focus {
+  border-color: var(--color-brand-600);
+  box-shadow: 0 0 0 var(--focus-ring-width) var(--focus-ring-color);
+}
+
+.task-column-capture-submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.15rem;
+  min-height: 2.15rem;
+  padding: 0;
+  border: 1px solid var(--color-border-brand);
+  border-radius: 0.55rem;
+  background: var(--color-surface-tint);
+  color: var(--color-brand-700);
+  cursor: pointer;
+  font: inherit;
+  font-size: 1.2rem;
+  line-height: 1;
+  transition: background var(--motion-standard) var(--motion-ease), transform var(--motion-standard) var(--motion-ease);
+}
+
+.task-column-capture-submit:hover,
+.task-column-capture-submit:focus-visible {
+  background: var(--color-border-brand);
+  transform: translateY(-1px);
+}
+
+@media (min-width: 768px) {
+  .tasks-page.workspace-shell {
+    height: 100dvh;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .tasks-page .workspace-content,
+  .tasks-page .tasks-main {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .tasks-page .tasks-main {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+    padding: 1.25rem 1.5rem;
+  }
+
+  .tasks-page .tasks-hero {
+    flex: 0 0 auto;
+    gap: 0.75rem;
+    margin-bottom: 0.8rem;
+  }
+
+  .tasks-page .tasks-hero h1 {
+    font-size: clamp(1.8rem, 3vw, 2.75rem);
+  }
+
+  .tasks-page .tasks-hero-note {
+    padding: 0.7rem 0.85rem;
+  }
+
+  .tasks-page .task-filter-card {
+    flex: 0 0 auto;
+    padding: 0.8rem 1rem;
+  }
+
+  .tasks-page .task-filter-heading {
+    align-items: center;
+    margin-bottom: 0.55rem;
+  }
+
+  .tasks-page .task-filter-heading h2 {
+    font-size: 1.1rem;
+  }
+
+  .tasks-page .tasks-board-heading {
+    flex: 0 0 auto;
+    margin: 0.8rem 0 0.55rem;
+  }
+
+  .tasks-page .tasks-board-heading h2 {
+    font-size: 1.1rem;
+  }
+
+  .tasks-page .task-board {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    flex: 1 1 0;
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .tasks-page .task-column {
+    min-height: 0;
+    overflow: hidden;
+    padding: 0.75rem;
+  }
+
+  .tasks-page .task-column-list {
+    min-height: 0;
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+}
+
+@media (max-width: 1199px) and (min-width: 768px) {
+  .tasks-page .task-board {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 767px) {
+  .tasks-page {
+    overflow-x: hidden;
+  }
+
+  .tasks-page .tasks-main {
+    width: 100%;
+    padding: 1rem;
+  }
+
+  .tasks-page .tasks-hero h1 {
+    font-size: 2rem;
+  }
+
+  .tasks-page .task-board {
+    min-width: 0;
+  }
+
+  .tasks-page .task-column {
+    min-width: 0;
+  }
+
+  .workspace-sidebar-nav {
+    flex-wrap: wrap;
+    overflow-x: hidden;
   }
 }

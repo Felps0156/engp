@@ -11,7 +11,7 @@ from categories.models import Category
 from .admin import TaskAdmin
 from .forms import TaskForm
 from .models import Task
-from .services import complete_task, reopen_task
+from .services import complete_task, move_task_to_column, reopen_task
 
 
 class TaskTestMixin:
@@ -167,6 +167,36 @@ class TaskServiceTests(TaskTestMixin, TestCase):
 
         task.refresh_from_db()
         self.assertEqual(task.status, Task.Status.PENDING)
+
+    def test_board_move_updates_column_state_and_order(self):
+        first_task = self.create_task(
+            title='Primeira tarefa',
+            due_date=timezone.localdate(),
+        )
+        second_task = self.create_task(title='Segunda tarefa')
+
+        move_task_to_column(
+            task=second_task,
+            workspace=self.workspace,
+            column='today',
+            before_task_id=first_task.pk,
+        )
+
+        second_task.refresh_from_db()
+        first_task.refresh_from_db()
+        self.assertEqual(second_task.status, Task.Status.PENDING)
+        self.assertEqual(second_task.due_date, timezone.localdate())
+        self.assertEqual(second_task.board_order, 0)
+        self.assertEqual(first_task.board_order, 1)
+
+        move_task_to_column(
+            task=second_task,
+            workspace=self.workspace,
+            column='completed',
+        )
+        second_task.refresh_from_db()
+        self.assertEqual(second_task.status, Task.Status.COMPLETED)
+        self.assertIsNotNone(second_task.completed_at)
 
 
 class TaskBoardViewTests(TaskTestMixin, TestCase):

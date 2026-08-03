@@ -69,6 +69,10 @@ class Task(TenantAwareModel):
         null=True,
         validators=[MinValueValidator(1)],
     )
+    board_order = models.PositiveIntegerField(
+        'ordem no quadro',
+        default=0,
+    )
     source = models.CharField(
         'origem',
         max_length=10,

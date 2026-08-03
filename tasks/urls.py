@@ -6,6 +6,7 @@ from .views import (
     TaskCompletedView,
     TaskCompleteView,
     TaskDeleteView,
+    TaskDragView,
     TaskInboxView,
     TaskMoveView,
     TaskPlanTodayView,
@@ -28,5 +29,6 @@ urlpatterns = [
     path('<int:pk>/reabrir/', TaskReopenView.as_view(), name='reopen'),
     path('<int:pk>/hoje/', TaskPlanTodayView.as_view(), name='plan_today'),
     path('<int:pk>/mover/', TaskMoveView.as_view(), name='move'),
+    path('<int:pk>/arrastar/', TaskDragView.as_view(), name='drag'),
     path('<int:pk>/excluir/', TaskDeleteView.as_view(), name='delete'),
 ]

@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{{ page_title }} | ENGP{% endblock %}
 
@@ -29,24 +30,6 @@
           </div>
         </aside>
       </div>
-
-      <section class="task-capture" id="capturar-tarefa" aria-labelledby="task-capture-heading">
-        <div class="task-capture-copy">
-          <p class="tasks-section-kicker">Captura rápida</p>
-          <h2 id="task-capture-heading">Qual é a próxima ação?</h2>
-          <p>Comece só pelo título. Data, prioridade e contexto podem ser ajustados depois.</p>
-        </div>
-        <form class="task-capture-form" method="post" action="{{ request.path }}" novalidate>
-          {% csrf_token %}
-          <input type="hidden" name="next" value="{{ quick_return_url }}">
-          <div class="field">
-            <label class="sr-only" for="{{ quick_form.title.id_for_label }}">{{ quick_form.title.label }}</label>
-            {{ quick_form.title }}
-            {{ quick_form.title.errors }}
-          </div>
-          <button class="primary-button task-capture-submit" type="submit">Adicionar tarefa</button>
-        </form>
-      </section>
 
       <section class="task-filter-card" aria-labelledby="task-filter-heading">
         <div class="task-filter-heading">
@@ -83,9 +66,9 @@
           <span class="tasks-board-hint">Arrume o dia por uma próxima ação de cada vez.</span>
         </div>
 
-        <section class="task-board" aria-label="Quadro de tarefas">
+        <section class="task-board" aria-label="Quadro de tarefas" data-task-board>
           {% for column in task_columns %}
-            <article class="task-column task-column-{{ column.key }}">
+            <article class="task-column task-column-{{ column.key }}" data-column-key="{{ column.key }}">
               <header class="task-column-header">
                 <div>
                   <p class="task-column-kicker">{{ column.kicker }}</p>
@@ -105,8 +88,14 @@
                   </div>
                 {% endfor %}
               </div>
+              <form class="task-column-capture-form" method="post" action="{{ request.path }}" novalidate>
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ quick_return_url }}">
+                <label class="sr-only" for="task-title-{{ column.key }}">Adicionar tarefa em {{ column.label }}</label>
+                <input id="task-title-{{ column.key }}" type="text" name="title" maxlength="180" autocomplete="off" placeholder="Adicionar tarefa..." required>
+                <button class="task-column-capture-submit" type="submit" aria-label="Adicionar tarefa em {{ column.label }}" title="Adicionar tarefa">+</button>
+              </form>
               <div class="task-column-footer">
-                <a class="task-column-add" href="#capturar-tarefa">+ Adicionar tarefa</a>
                 {% if column.has_more %}<a class="task-column-more" href="{{ column.url }}">Ver todas ({{ column.total }})</a>{% endif %}
               </div>
             </article>
@@ -146,7 +135,7 @@
             {% if has_filters %}
               <a class="secondary-button compact-button" href="{{ request.path }}">Limpar filtros</a>
             {% else %}
-              <a class="primary-button task-empty-action" href="#capturar-tarefa">Capturar tarefa</a>
+              <a class="primary-button task-empty-action" href="{% url 'tasks:inbox' %}">Capturar tarefa</a>
             {% endif %}
           </section>
         {% endif %}
@@ -154,4 +143,8 @@
     </section>
   </div>
 </main>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{% static 'js/tasks-board.js' %}" defer></script>
 {% endblock %}

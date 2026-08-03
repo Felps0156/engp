@@ -1,4 +1,4 @@
-<article class="task-card{% if task.status == 'completed' %} is-completed{% endif %}">
+<article class="task-card{% if task.status == 'completed' %} is-completed{% endif %}"{% if is_board %} draggable="true" data-task-id="{{ task.pk }}" data-drag-url="{% url 'tasks:drag' task.pk %}"{% endif %}>
   <div class="task-state-column">
     {% if task.status == 'pending' %}
       <form method="post" action="{% url 'tasks:complete' task.pk %}">

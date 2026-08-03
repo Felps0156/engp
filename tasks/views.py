@@ -3,7 +3,7 @@
 from datetime import timedelta
 
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -16,7 +16,7 @@ from base.mixins import PerPageMixin, RoleRequiredMixin, TenantQuerysetMixin
 
 from .forms import QuickTaskForm, TaskFilterForm, TaskForm, TaskMoveForm
 from .models import Task
-from .services import complete_task, move_task, reopen_task
+from .services import complete_task, move_task, move_task_to_column, reopen_task
 
 
 def _safe_next_url(request, candidate, fallback):
@@ -138,8 +138,8 @@ class TaskListView(TaskScopeMixin, PerPageMixin, ListView):
                 queryset = queryset.filter(priority=priority)
 
         if view_key == 'completed':
-            return queryset.order_by('-completed_at', '-pk')
-        return queryset.order_by('due_date', '-created_at', '-pk')
+            return queryset.order_by('board_order', '-completed_at', '-pk')
+        return queryset.order_by('board_order', 'due_date', '-created_at', '-pk')
 
     def get_queryset(self):
         return self.get_view_queryset(self.view_key)
@@ -373,6 +373,31 @@ class TaskMoveView(PendingTaskActionView):
         )
         messages.success(request, 'Data da tarefa atualizada.')
         return HttpResponseRedirect(self.get_return_url())
+
+
+class TaskDragView(TaskActionView):
+    '''Move a task between board columns and persist its position.'''
+
+    def post(self, request, *args, **kwargs):
+        task = self.get_object()
+        before_task_id = request.POST.get('before_task_id') or None
+        if before_task_id:
+            try:
+                before_task_id = int(before_task_id)
+            except (TypeError, ValueError):
+                return HttpResponse(status=400)
+
+        try:
+            move_task_to_column(
+                task=task,
+                workspace=request.tenant,
+                column=request.POST.get('column', ''),
+                before_task_id=before_task_id,
+            )
+        except ValueError:
+            return HttpResponse(status=400)
+
+        return HttpResponse(status=204)
 
 
 class TaskDeleteView(TaskActionView):
