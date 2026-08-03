@@ -94,3 +94,67 @@ class TaskForm(forms.ModelForm):
         if estimated_minutes is not None and estimated_minutes < 1:
             raise ValidationError('A estimativa deve ser maior que zero.')
         return estimated_minutes
+
+
+class QuickTaskForm(forms.ModelForm):
+    '''Capture a task title without interrupting the planning flow.'''
+
+    class Meta:
+        model = Task
+        fields = ('title',)
+        widgets = {
+            'title': forms.TextInput(
+                attrs={
+                    'autocomplete': 'off',
+                    'placeholder': 'Ex.: Revisar o capítulo de biologia',
+                    'maxlength': 180,
+                },
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['title'].label = 'Próxima ação'
+
+    def clean_title(self):
+        title = self.cleaned_data['title'].strip()
+        if not title:
+            raise ValidationError('Informe um título para a tarefa.')
+        return title
+
+
+class TaskFilterForm(forms.Form):
+    '''Validate list filters while keeping category choices tenant-aware.'''
+
+    category = forms.ModelChoiceField(
+        queryset=Category.objects.none(),
+        required=False,
+        label='Categoria',
+        empty_label='Todas as categorias',
+    )
+    priority = forms.ChoiceField(
+        choices=(('', 'Todas as prioridades'), *Task.Priority.choices),
+        required=False,
+        label='Prioridade',
+    )
+
+    def __init__(self, *args, workspace=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        if workspace is not None:
+            self.fields['category'].queryset = Category.objects.filter(
+                workspace=workspace,
+                is_active=True,
+            ).order_by('name', 'pk')
+
+
+class TaskMoveForm(forms.Form):
+    '''Validate a new planned date submitted by a task action.'''
+
+    due_date = forms.DateField(
+        label='Nova data',
+        input_formats=('%Y-%m-%d',),
+        widget=forms.DateInput(
+            format='%Y-%m-%d',
+            attrs={'type': 'date'},
+        ),
+    )

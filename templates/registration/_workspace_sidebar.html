@@ -1,0 +1,42 @@
+{% with current_url=request.resolver_match.url_name current_app=request.resolver_match.app_name %}
+<aside class="workspace-sidebar" aria-label="Navegação principal">
+  <div class="workspace-sidebar-brand">
+    {% include 'registration/_brand.html' %}
+    <span class="workspace-sidebar-caption">Workspace pessoal</span>
+  </div>
+
+  <nav class="workspace-sidebar-nav">
+    <p class="workspace-sidebar-label">Workspace</p>
+    <a class="workspace-sidebar-link{% if current_url == 'home' %} is-active{% endif %}" href="{% url 'accounts:home' %}"{% if current_url == 'home' %} aria-current="page"{% endif %}>
+      <span class="workspace-sidebar-icon" aria-hidden="true">01</span>
+      <span>Visão geral</span>
+    </a>
+    <a class="workspace-sidebar-link{% if current_app == 'tasks' %} is-active{% endif %}" href="{% url 'tasks:inbox' %}"{% if current_app == 'tasks' %} aria-current="page"{% endif %}>
+      <span class="workspace-sidebar-icon" aria-hidden="true">02</span>
+      <span>Tarefas</span>
+    </a>
+    <a class="workspace-sidebar-link{% if current_app == 'categories' %} is-active{% endif %}" href="{% url 'categories:list' %}"{% if current_app == 'categories' %} aria-current="page"{% endif %}>
+      <span class="workspace-sidebar-icon" aria-hidden="true">03</span>
+      <span>Categorias</span>
+    </a>
+    <a class="workspace-sidebar-link{% if current_app == 'accounts' and current_url != 'home' %} is-active{% endif %}" href="{% url 'accounts:settings' %}"{% if current_app == 'accounts' and current_url != 'home' %} aria-current="page"{% endif %}>
+      <span class="workspace-sidebar-icon" aria-hidden="true">04</span>
+      <span>Configurações</span>
+    </a>
+  </nav>
+
+  <div class="workspace-sidebar-footer">
+    <div class="workspace-sidebar-user">
+      <span class="workspace-sidebar-avatar" aria-hidden="true">{{ request.user.get_short_name|default:request.user.email|slice:':1'|upper }}</span>
+      <span>
+        <strong>{{ request.user.get_short_name|default:request.user.email }}</strong>
+        <small>{{ request.tenant.name|default:'Workspace ativo' }}</small>
+      </span>
+    </div>
+    <form method="post" action="{% url 'accounts:logout' %}">
+      {% csrf_token %}
+      <button class="workspace-sidebar-logout" type="submit">Sair</button>
+    </form>
+  </div>
+</aside>
+{% endwith %}

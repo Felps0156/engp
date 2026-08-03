@@ -2659,21 +2659,21 @@ Integrações de calendário, equipes, relatórios avançados e aplicativos móv
 
 ### Sprint 9 — Interface de tarefas
 
-- [ ] Criar Caixa de entrada.
-- [ ] Criar Hoje.
-- [ ] Criar Esta semana.
-- [ ] Criar Concluídas.
-- [ ] Reusar mesma query base.
-- [ ] Criar criação rápida.
-- [ ] Criar edição.
-- [ ] Criar exclusão com confirmação.
-- [ ] Criar concluir/reabrir.
-- [ ] Criar planejar para hoje.
-- [ ] Criar mover para data.
-- [ ] Criar filtros.
-- [ ] Criar paginação.
-- [ ] Preservar query params.
-- [ ] Criar empty states.
+- [x] Criar Caixa de entrada.
+- [x] Criar Hoje.
+- [x] Criar Esta semana.
+- [x] Criar Concluídas.
+- [x] Reusar mesma query base.
+- [x] Criar criação rápida.
+- [x] Criar edição.
+- [x] Criar exclusão com confirmação.
+- [x] Criar concluir/reabrir.
+- [x] Criar planejar para hoje.
+- [x] Criar mover para data.
+- [x] Criar filtros.
+- [x] Criar paginação.
+- [x] Preservar query params.
+- [x] Criar empty states.
 
 ### Sprint 10 — Rotina semanal
 

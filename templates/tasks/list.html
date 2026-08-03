@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} | ENGP{% endblock %}
+
+{% block body %}
+<main class="account-page tasks-page workspace-shell">
+  {% include 'registration/_workspace_sidebar.html' %}
+  <div class="workspace-content">
+    <section class="tasks-main">
+      {% include 'registration/_messages.html' %}
+
+      <div class="tasks-hero">
+        <div>
+          <p class="eyebrow">Planejamento pessoal</p>
+          {% if is_board %}
+            <h1>Seu fluxo de tarefas</h1>
+            <p class="page-description">Capture, organize e conclua o que importa sem perder a próxima ação.</p>
+          {% else %}
+            <h1>{{ page_title }}</h1>
+            <p class="page-description">{{ page_description }}</p>
+          {% endif %}
+        </div>
+        <aside class="tasks-hero-note" aria-label="Workspace ativo">
+          <span class="tasks-hero-note-mark" aria-hidden="true">ENGP</span>
+          <div>
+            <p class="tasks-hero-note-kicker">Workspace ativo</p>
+            <strong>{{ request.tenant.name }}</strong>
+            <span>Capture primeiro. Decida depois.</span>
+          </div>
+        </aside>
+      </div>
+
+      <section class="task-capture" id="capturar-tarefa" aria-labelledby="task-capture-heading">
+        <div class="task-capture-copy">
+          <p class="tasks-section-kicker">Captura rápida</p>
+          <h2 id="task-capture-heading">Qual é a próxima ação?</h2>
+          <p>Comece só pelo título. Data, prioridade e contexto podem ser ajustados depois.</p>
+        </div>
+        <form class="task-capture-form" method="post" action="{{ request.path }}" novalidate>
+          {% csrf_token %}
+          <input type="hidden" name="next" value="{{ quick_return_url }}">
+          <div class="field">
+            <label class="sr-only" for="{{ quick_form.title.id_for_label }}">{{ quick_form.title.label }}</label>
+            {{ quick_form.title }}
+            {{ quick_form.title.errors }}
+          </div>
+          <button class="primary-button task-capture-submit" type="submit">Adicionar tarefa</button>
+        </form>
+      </section>
+
+      <section class="task-filter-card" aria-labelledby="task-filter-heading">
+        <div class="task-filter-heading">
+          <div>
+            <p class="tasks-section-kicker">Refine a lista</p>
+            <h2 id="task-filter-heading">Filtros</h2>
+          </div>
+          {% if has_filters %}<span class="task-filter-active">Filtros ativos</span>{% endif %}
+        </div>
+        <form class="task-filter-form" method="get">
+          <div class="field">
+            {{ filter_form.category.label_tag }}
+            {{ filter_form.category }}
+            {{ filter_form.category.errors }}
+          </div>
+          <div class="field">
+            {{ filter_form.priority.label_tag }}
+            {{ filter_form.priority }}
+            {{ filter_form.priority.errors }}
+          </div>
+          <div class="task-filter-actions">
+            {% if has_filters %}<a class="text-link" href="{{ request.path }}">Limpar filtros</a>{% endif %}
+            <button class="secondary-button compact-button" type="submit">Aplicar filtros</button>
+          </div>
+        </form>
+      </section>
+
+      {% if is_board %}
+        <div class="tasks-board-heading">
+          <div>
+            <p class="tasks-section-kicker">Visão geral</p>
+            <h2>O que está em movimento</h2>
+          </div>
+          <span class="tasks-board-hint">Arrume o dia por uma próxima ação de cada vez.</span>
+        </div>
+
+        <section class="task-board" aria-label="Quadro de tarefas">
+          {% for column in task_columns %}
+            <article class="task-column task-column-{{ column.key }}">
+              <header class="task-column-header">
+                <div>
+                  <p class="task-column-kicker">{{ column.kicker }}</p>
+                  <h2><a href="{{ column.url }}">{{ column.label }}</a></h2>
+                </div>
+                <span class="task-column-count">{{ column.total }}</span>
+              </header>
+              <div class="task-column-rule" aria-hidden="true"></div>
+              <div class="task-column-list">
+                {% for task in column.tasks %}
+                  {% include 'tasks/_card.html' %}
+                {% empty %}
+                  <div class="task-column-empty">
+                    <span class="task-column-empty-mark" aria-hidden="true">+</span>
+                    <strong>{{ column.empty_title }}</strong>
+                    <p>{{ column.empty_description }}</p>
+                  </div>
+                {% endfor %}
+              </div>
+              <div class="task-column-footer">
+                <a class="task-column-add" href="#capturar-tarefa">+ Adicionar tarefa</a>
+                {% if column.has_more %}<a class="task-column-more" href="{{ column.url }}">Ver todas ({{ column.total }})</a>{% endif %}
+              </div>
+            </article>
+          {% endfor %}
+        </section>
+      {% else %}
+        <a class="task-board-backlink" href="{% url 'tasks:inbox' %}">← Voltar ao quadro</a>
+        <div class="tasks-list-heading">
+          <div>
+            <p class="tasks-section-kicker">Sua lista</p>
+            <h2>{{ page_title }}</h2>
+          </div>
+          {% if page_obj %}<span class="task-result-count">{{ page_obj.paginator.count }} tarefa{{ page_obj.paginator.count|pluralize:'s' }}</span>{% endif %}
+        </div>
+
+        {% if page_obj.object_list %}
+          <div class="tasks-list">
+            {% for task in page_obj.object_list %}
+              {% include 'tasks/_card.html' %}
+            {% endfor %}
+          </div>
+
+          {% if is_paginated %}
+            <nav class="task-pagination" aria-label="Paginação de tarefas">
+              <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+              <div class="task-pagination-links">
+                {% if page_obj.has_previous %}<a class="secondary-button compact-button" href="?page={{ page_obj.previous_page_number }}{% if pagination_query %}&{{ pagination_query }}{% endif %}">Anterior</a>{% endif %}
+                {% if page_obj.has_next %}<a class="secondary-button compact-button" href="?page={{ page_obj.next_page_number }}{% if pagination_query %}&{{ pagination_query }}{% endif %}">Próxima</a>{% endif %}
+              </div>
+            </nav>
+          {% endif %}
+        {% else %}
+          <section class="task-empty-state" aria-labelledby="task-empty-heading">
+            <span class="task-empty-mark" aria-hidden="true">+</span>
+            <h2 id="task-empty-heading">{{ empty_title }}</h2>
+            <p>{{ empty_description }}</p>
+            {% if has_filters %}
+              <a class="secondary-button compact-button" href="{{ request.path }}">Limpar filtros</a>
+            {% else %}
+              <a class="primary-button task-empty-action" href="#capturar-tarefa">Capturar tarefa</a>
+            {% endif %}
+          </section>
+        {% endif %}
+      {% endif %}
+    </section>
+  </div>
+</main>
+{% endblock %}

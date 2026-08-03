@@ -1,7 +1,9 @@
-from datetime import date
+from datetime import date, timedelta
 
 from django.core.exceptions import ValidationError
 from django.test import RequestFactory, TestCase
+from django.urls import reverse
+from django.utils import timezone
 
 from accounts.services import create_account
 from categories.models import Category
@@ -165,6 +167,72 @@ class TaskServiceTests(TaskTestMixin, TestCase):
 
         task.refresh_from_db()
         self.assertEqual(task.status, Task.Status.PENDING)
+
+
+class TaskBoardViewTests(TaskTestMixin, TestCase):
+    def setUp(self):
+        self.user, self.workspace = create_account(
+            email='task-board@example.com',
+            password='StrongPassword!123',
+            first_name='Quadro',
+        )
+        self.client.force_login(self.user)
+
+    def test_board_exposes_four_non_overlapping_columns(self):
+        today = timezone.localdate()
+        inbox_task = self.create_task(title='Capturar sem data')
+        week_task = self.create_task(
+            title='Planejar para a semana',
+            due_date=today + timedelta(days=2),
+        )
+        today_task = self.create_task(title='Executar hoje', due_date=today)
+        overdue_task = self.create_task(
+            title='Resolver atraso',
+            due_date=today - timedelta(days=1),
+        )
+        completed_task = self.create_task(
+            title='Tarefa feita',
+            status=Task.Status.COMPLETED,
+            completed_at=timezone.now(),
+        )
+
+        response = self.client.get(reverse('tasks:inbox'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.context['is_board'])
+        columns = response.context['task_columns']
+        self.assertEqual(
+            [column['key'] for column in columns],
+            ['inbox', 'week', 'today', 'completed'],
+        )
+
+        task_ids_by_column = {
+            column['key']: {task.pk for task in column['tasks']}
+            for column in columns
+        }
+        self.assertEqual(task_ids_by_column['inbox'], {inbox_task.pk})
+        self.assertEqual(task_ids_by_column['week'], {week_task.pk})
+        self.assertEqual(
+            task_ids_by_column['today'],
+            {today_task.pk, overdue_task.pk},
+        )
+        self.assertEqual(task_ids_by_column['completed'], {completed_task.pk})
+
+    def test_week_view_keeps_today_only_in_today(self):
+        today = timezone.localdate()
+        self.create_task(title='Hoje', due_date=today)
+        future_task = self.create_task(
+            title='Depois de hoje',
+            due_date=today + timedelta(days=1),
+        )
+
+        response = self.client.get(reverse('tasks:week'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            [task.pk for task in response.context['page_obj'].object_list],
+            [future_task.pk],
+        )
 
 
 class TaskAdminTests(TaskTestMixin, TestCase):

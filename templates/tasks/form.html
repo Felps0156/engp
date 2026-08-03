@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} | ENGP{% endblock %}
+
+{% block body %}
+<main class="account-page tasks-page workspace-shell">
+  {% include 'registration/_workspace_sidebar.html' %}
+  <div class="workspace-content">
+    <section class="tasks-form-main">
+      {% include 'registration/_messages.html' %}
+      <div class="task-form-card">
+        <p class="eyebrow">Planejamento da tarefa</p>
+        <h1>{{ page_title }}</h1>
+        <p class="page-description">{{ page_description }}</p>
+
+      {% if form.non_field_errors %}<div class="form-error" role="alert">{{ form.non_field_errors }}</div>{% endif %}
+      <form class="task-form" method="post" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ next_url }}">
+        <div class="field">
+          {{ form.title.label_tag }}
+          {{ form.title }}
+          {{ form.title.errors }}
+        </div>
+        <div class="field">
+          {{ form.description.label_tag }}
+          {{ form.description }}
+          <span class="field-help">Adicione apenas o contexto necessário para começar.</span>
+          {{ form.description.errors }}
+        </div>
+        <div class="form-grid two-columns">
+          <div class="field">
+            {{ form.category.label_tag }}
+            {{ form.category }}
+            {{ form.category.errors }}
+          </div>
+          <div class="field">
+            {{ form.priority.label_tag }}
+            {{ form.priority }}
+            {{ form.priority.errors }}
+          </div>
+        </div>
+        <div class="form-grid two-columns">
+          <div class="field">
+            {{ form.due_date.label_tag }}
+            {{ form.due_date }}
+            <span class="field-help">Deixe em branco para manter na caixa de entrada.</span>
+            {{ form.due_date.errors }}
+          </div>
+          <div class="field">
+            {{ form.estimated_minutes.label_tag }}
+            {{ form.estimated_minutes }}
+            <span class="field-help">Opcional, em minutos.</span>
+            {{ form.estimated_minutes.errors }}
+          </div>
+        </div>
+        <div class="task-form-actions">
+          <a class="secondary-button" href="{{ next_url }}">Cancelar</a>
+          <button class="primary-button" type="submit">Salvar alterações</button>
+        </div>
+      </form>
+      </div>
+    </section>
+  </div>
+</main>
+{% endblock %}

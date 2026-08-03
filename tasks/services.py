@@ -45,3 +45,13 @@ def reopen_task(*, task, workspace):
     locked_task.completed_at = None
     locked_task.save(update_fields=('status', 'completed_at', 'updated_at'))
     return locked_task
+
+
+@transaction.atomic
+def move_task(*, task, workspace, due_date):
+    '''Move a task to a planned date without bypassing tenant locking.'''
+
+    locked_task = _locked_task(task=task, workspace=workspace)
+    locked_task.due_date = due_date
+    locked_task.save(update_fields=('due_date', 'updated_at'))
+    return locked_task
