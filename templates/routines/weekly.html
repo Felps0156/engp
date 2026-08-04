@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Rotina semanal | ENGP{% endblock %}
+
+{% block body %}
+<main class="account-page routines-page workspace-shell">
+  {% include 'registration/_workspace_sidebar.html' %}
+  <div class="workspace-content">
+    <section class="routines-main">
+      {% include 'registration/_messages.html' %}
+
+      <header class="routines-hero">
+        <div>
+          <p class="eyebrow">Planejamento recorrente</p>
+          <h1>{{ page_title }}</h1>
+          <p class="page-description">{{ page_description }}</p>
+        </div>
+        <div class="routines-hero-actions">
+          <span class="routines-summary">{% if active_routine_count == 1 %}1 item ativo{% else %}{{ active_routine_count }} itens ativos{% endif %}</span>
+          <a class="primary-button routines-create-button" href="{% url 'routines:create' %}">Novo item</a>
+        </div>
+      </header>
+
+      <section class="routine-week" aria-labelledby="routine-week-heading">
+        <header class="routine-week-heading">
+          <div>
+            <p class="tasks-section-kicker">Segunda a domingo</p>
+            <h2 id="routine-week-heading">O que se repete na sua semana</h2>
+          </div>
+          <span class="routine-today-pill">Hoje: {{ today_label }}</span>
+        </header>
+
+        <div class="routine-week-grid">
+          {% for day in week_days %}
+            <article class="routine-day{% if day.is_today %} is-today{% endif %}" aria-labelledby="routine-day-{{ day.value }}">
+              <header class="routine-day-header">
+                <div>
+                  {% if day.is_today %}<p class="routine-day-kicker">Hoje</p>{% else %}<p class="routine-day-kicker">Dia da semana</p>{% endif %}
+                  <h3 id="routine-day-{{ day.value }}">{{ day.label }}</h3>
+                </div>
+                <span class="routine-day-count">{{ day.items|length }}</span>
+              </header>
+
+              <div class="routine-day-list">
+                {% for item in day.items %}
+                  {% include 'routines/_item.html' %}
+                {% empty %}
+                  <div class="routine-day-empty">
+                    <span aria-hidden="true">+</span>
+                    <strong>Dia livre</strong>
+                    <p>Nenhum item recorrente previsto.</p>
+                  </div>
+                {% endfor %}
+              </div>
+            </article>
+          {% endfor %}
+        </div>
+      </section>
+
+      <aside class="routine-planning-note" aria-label="Como funciona a rotina">
+        <span class="routine-planning-mark" aria-hidden="true"><i data-lucide="repeat-2"></i></span>
+        <div>
+          <strong>Um item, vários dias.</strong>
+          <p>Edite o modelo quando quiser. Quando as ocorrências forem geradas, elas guardarão o título, horário, categoria e prioridade usados naquele momento.</p>
+        </div>
+      </aside>
+    </section>
+  </div>
+</main>
+{% endblock %}

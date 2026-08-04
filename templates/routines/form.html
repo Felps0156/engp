@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ page_title }} | ENGP{% endblock %}
+
+{% block body %}
+<main class="account-page routines-page workspace-shell">
+  {% include 'registration/_workspace_sidebar.html' %}
+  <div class="workspace-content">
+    <section class="routines-form-main">
+      {% include 'registration/_messages.html' %}
+      <div class="routine-form-card">
+        <a class="routine-backlink" href="{% url 'routines:weekly' %}">← Voltar para a semana</a>
+        <p class="eyebrow">Planejamento recorrente</p>
+        <div class="routine-form-heading">
+          <div>
+            <h1>{{ page_title }}</h1>
+            <p class="page-description">{{ page_description }}</p>
+          </div>
+          {% if is_edit and not form.instance.is_active %}<span class="routine-form-state">Pausado</span>{% endif %}
+        </div>
+
+        {% if form.non_field_errors %}
+          <div class="form-error">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <form class="routine-form" method="post" novalidate>
+          {% csrf_token %}
+          <div class="routine-form-grid">
+            <div class="field routine-form-full">
+              {{ form.title.label_tag }}
+              {{ form.title }}
+              {{ form.title.errors }}
+            </div>
+            <div class="field">
+              {{ form.category.label_tag }}
+              {{ form.category }}
+              {{ form.category.errors }}
+            </div>
+            <div class="field">
+              {{ form.priority.label_tag }}
+              {{ form.priority }}
+              {{ form.priority.errors }}
+            </div>
+            <div class="field">
+              {{ form.scheduled_time.label_tag }}
+              {{ form.scheduled_time }}
+              {{ form.scheduled_time.errors }}
+            </div>
+            <div class="field">
+              {{ form.estimated_minutes.label_tag }}
+              {{ form.estimated_minutes }}
+              {{ form.estimated_minutes.errors }}
+            </div>
+            <div class="field">
+              {{ form.starts_on.label_tag }}
+              {{ form.starts_on }}
+              {{ form.starts_on.errors }}
+            </div>
+            <div class="field">
+              {{ form.ends_on.label_tag }}
+              {{ form.ends_on }}
+              {{ form.ends_on.errors }}
+            </div>
+          </div>
+
+          <fieldset class="routine-weekday-fieldset">
+            <legend>{{ form.weekdays.label }}</legend>
+            <p class="field-help">Escolha todos os dias em que este item se repete.</p>
+            <div class="routine-weekday-grid">
+              {% for checkbox in form.weekdays %}
+                <label class="routine-weekday-choice">
+                  {{ checkbox.tag }}
+                  <span>{{ checkbox.choice_label }}</span>
+                </label>
+              {% endfor %}
+            </div>
+            {{ form.weekdays.errors }}
+          </fieldset>
+
+          <div class="routine-form-actions">
+            <a class="secondary-button" href="{% url 'routines:weekly' %}">Cancelar</a>
+            <button class="primary-button" type="submit">{{ submit_label }}</button>
+          </div>
+        </form>
+      </div>
+    </section>
+  </div>
+</main>
+{% endblock %}

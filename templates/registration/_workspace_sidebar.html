@@ -20,6 +20,9 @@
         </svg>
       </span>
     </a>
+    <a class="workspace-sidebar-link{% if current_app == 'routines' %} is-active{% endif %}" href="{% url 'routines:weekly' %}" aria-label="Rotina semanal" data-tooltip="Rotina semanal"{% if current_app == 'routines' %} aria-current="page"{% endif %}>
+      <span class="workspace-sidebar-icon" aria-hidden="true"><i data-lucide="calendar-days" class="workspace-sidebar-lucide"></i></span>
+    </a>
     <a class="workspace-sidebar-link{% if current_app == 'categories' %} is-active{% endif %}" href="{% url 'categories:list' %}" aria-label="Categorias" data-tooltip="Categorias"{% if current_app == 'categories' %} aria-current="page"{% endif %}>
       <span class="workspace-sidebar-icon" aria-hidden="true"><i data-lucide="tags" class="workspace-sidebar-lucide"></i></span>
     </a>

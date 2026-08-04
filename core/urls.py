@@ -15,4 +15,5 @@ urlpatterns = [
     path('onboarding/', include('onboarding.urls')),
     path('categorias/', include('categories.urls')),
     path('tarefas/', include('tasks.urls')),
+    path('rotina/', include('routines.urls')),
 ]

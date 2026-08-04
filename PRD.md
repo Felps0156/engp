@@ -725,7 +725,7 @@ Regras:
 - `created_by`;
 - `title`;
 - `category`;
-- `weekdays`: JSON/lista validada ou bitmask documentado;
+- `weekdays`: JSON com lista validada de inteiros `0` a `6`, de segunda-feira a domingo;
 - `scheduled_time`: opcional;
 - `estimated_minutes`;
 - `priority`;
@@ -741,7 +741,7 @@ Regras:
 - `occurrence_date`;
 - `scheduled_time_snapshot`;
 - `title_snapshot`;
-- `category_snapshot` ou FK preservada;
+- `category_snapshot` e token de cor preservados;
 - `estimated_minutes_snapshot`;
 - `priority_snapshot`;
 - `status`: pending/completed/skipped;
@@ -981,7 +981,7 @@ Em desktop, usar colunas ou grade. Em mobile, usar tabs, accordions ou cartões 
 
 - mudanças afetam somente ocorrências futuras pendentes ainda não materializadas;
 - ocorrências já criadas mantêm snapshots;
-- exclusão deve ser protegida quando houver histórico: preferir soft disable ou `PROTECT`/confirmação adequada.
+- exclusão usa `PROTECT` quando houver histórico, com confirmação e mensagem orientando a pausa.
 
 ---
 
@@ -2677,18 +2677,18 @@ Integrações de calendário, equipes, relatórios avançados e aplicativos móv
 
 ### Sprint 10 — Rotina semanal
 
-- [ ] Criar WeeklyRoutineItem.
-- [ ] Validar weekdays.
-- [ ] Criar RoutineOccurrence.
-- [ ] Criar snapshots.
-- [ ] Criar constraints.
-- [ ] Criar página semanal.
-- [ ] Criar item.
-- [ ] Editar item.
-- [ ] Pausar/reativar.
-- [ ] Excluir com histórico protegido.
-- [ ] Criar command de geração.
-- [ ] Garantir idempotência.
+- [x] Criar WeeklyRoutineItem.
+- [x] Validar weekdays.
+- [x] Criar RoutineOccurrence.
+- [x] Criar snapshots.
+- [x] Criar constraints.
+- [x] Criar página semanal.
+- [x] Criar item.
+- [x] Editar item.
+- [x] Pausar/reativar.
+- [x] Excluir com histórico protegido.
+- [x] Criar command de geração.
+- [x] Garantir idempotência.
 
 ### Sprint 11 — Execução da rotina
 

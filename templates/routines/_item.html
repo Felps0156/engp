@@ -1,0 +1,38 @@
+<article class="routine-item-card{% if not item.is_active %} is-paused{% endif %}">
+  <div class="routine-item-heading">
+    <div>
+      <h4>{{ item.title }}</h4>
+      {% if not item.is_active %}<span class="routine-item-state">Pausado</span>{% endif %}
+    </div>
+    <span class="routine-priority priority-{{ item.priority }}">{{ item.get_priority_display }}</span>
+  </div>
+
+  <div class="routine-item-meta">
+    {% if item.category %}
+      <span class="routine-category-tag"><span class="routine-category-dot" data-color-token="{{ item.category.color_token }}" aria-hidden="true"></span>{{ item.category.name }}</span>
+    {% else %}
+      <span class="routine-category-tag is-muted">Sem categoria</span>
+    {% endif %}
+    {% if item.scheduled_time %}<span>{{ item.scheduled_time|time:'H:i' }}</span>{% endif %}
+    {% if item.estimated_minutes %}<span>{{ item.estimated_minutes }} min</span>{% endif %}
+  </div>
+
+  <div class="routine-item-actions">
+    <a class="routine-action-button" href="{% url 'routines:update' item.pk %}">Editar</a>
+    {% if item.is_active %}
+      <form method="post" action="{% url 'routines:pause' item.pk %}">
+        {% csrf_token %}
+        <button class="routine-action-button" type="submit">Pausar</button>
+      </form>
+    {% else %}
+      <form method="post" action="{% url 'routines:resume' item.pk %}">
+        {% csrf_token %}
+        <button class="routine-action-button is-primary" type="submit">Reativar</button>
+      </form>
+    {% endif %}
+    <form method="post" action="{% url 'routines:delete' item.pk %}" onsubmit="return window.confirm('Excluir o item {{ item.title|escapejs }}? O histórico existente impede a exclusão.');">
+      {% csrf_token %}
+      <button class="routine-action-button is-danger" type="submit">Excluir</button>
+    </form>
+  </div>
+</article>
