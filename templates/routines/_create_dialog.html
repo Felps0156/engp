@@ -1,0 +1,26 @@
+<dialog class="routine-create-dialog" data-routine-dialog{% if open_create_dialog %} data-open="true"{% endif %} aria-labelledby="routine-create-title">
+  <button class="routine-dialog-close" type="button" data-routine-dialog-close aria-label="Fechar" title="Fechar"><i data-lucide="x"></i></button>
+  <p class="tasks-section-kicker">Novo hábito diário</p>
+  <h2 id="routine-create-title">O que você quer repetir?</h2>
+  <p class="routine-dialog-description">O hábito ficará disponível em todos os dias do mês.</p>
+
+  {% if quick_form.non_field_errors %}<div class="form-error">{{ quick_form.non_field_errors }}</div>{% endif %}
+  <form class="routine-quick-form" method="post" action="{% url 'routines:weekly' %}" novalidate>
+    {% csrf_token %}
+    <input type="hidden" name="month" value="{{ analysis.month_value }}">
+    <div class="field">
+      {{ quick_form.title.label_tag }}
+      {{ quick_form.title }}
+      {{ quick_form.title.errors }}
+    </div>
+    <div class="field">
+      {{ quick_form.category.label_tag }}
+      {{ quick_form.category }}
+      {{ quick_form.category.errors }}
+    </div>
+    <div class="routine-dialog-actions">
+      <button class="routine-dialog-cancel" type="button" data-routine-dialog-close>Cancelar</button>
+      <button class="primary-button" type="submit">Criar hábito</button>
+    </div>
+  </form>
+</dialog>

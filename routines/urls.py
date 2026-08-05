@@ -6,6 +6,7 @@ from .views import (
     RoutineCreateView,
     RoutineDeleteView,
     RoutinePauseView,
+    RoutineOccurrenceToggleView,
     RoutineResumeView,
     RoutineUpdateView,
     RoutineWeeklyView,
@@ -21,4 +22,9 @@ urlpatterns = [
     path('<int:pk>/pausar/', RoutinePauseView.as_view(), name='pause'),
     path('<int:pk>/reativar/', RoutineResumeView.as_view(), name='resume'),
     path('<int:pk>/excluir/', RoutineDeleteView.as_view(), name='delete'),
+    path(
+        '<int:pk>/ocorrencias/alternar/',
+        RoutineOccurrenceToggleView.as_view(),
+        name='toggle-occurrence',
+    ),
 ]

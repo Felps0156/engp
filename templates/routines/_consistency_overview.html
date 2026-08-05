@@ -1,0 +1,55 @@
+{% load l10n %}
+<section class="consistency-overview{% if analysis.radar %} has-radar{% endif %}" aria-label="Consistência mensal">
+  {% if analysis.rows %}
+    <div class="consistency-area-wrap">
+      <svg class="consistency-area-svg" viewBox="0 0 1000 112" preserveAspectRatio="none" role="img" aria-labelledby="consistency-area-title consistency-area-description">
+        <title id="consistency-area-title">Evolução diária da consistência</title>
+        <desc id="consistency-area-description">Percentual de hábitos concluídos em cada dia do mês.</desc>
+        <defs>
+          <linearGradient id="consistency-area-fill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="var(--color-brand-600)" stop-opacity="0.32"></stop>
+            <stop offset="1" stop-color="var(--color-brand-600)" stop-opacity="0.03"></stop>
+          </linearGradient>
+        </defs>
+        <line class="consistency-area-baseline" x1="0" y1="104" x2="1000" y2="104"></line>
+        <path class="consistency-area-fill" d="{{ analysis.chart_area_path }}"></path>
+        <path class="consistency-area-line" d="{{ analysis.chart_line_path }}"></path>
+        {% for point in analysis.chart_points %}
+          <g class="consistency-area-point" tabindex="0" role="img" aria-label="{{ point.date_label }}: {{ point.completed }} de {{ point.total }} hábitos, {{ point.percentage }} por cento">
+            <circle class="consistency-area-hit" cx="{{ point.x|unlocalize }}" cy="{{ point.y|unlocalize }}" r="13"></circle>
+            <circle cx="{{ point.x|unlocalize }}" cy="{{ point.y|unlocalize }}" r="2.4"></circle>
+            <title>{{ point.date_label }}&#10;{{ point.completed }} de {{ point.total }} hábitos concluídos&#10;{{ point.percentage }}% de conclusão</title>
+          </g>
+        {% endfor %}
+      </svg>
+
+      <div class="consistency-week-summaries" style="--summary-weeks: {{ analysis.weekly_summaries|length }}">
+        {% for week in analysis.weekly_summaries %}
+          <div title="{{ week.label }}: {{ week.completed }} de {{ week.total }} conclusões, {{ week.percentage }}%">
+            <span>{{ week.completed }}/{{ week.total }} <strong>{{ week.percentage }}%</strong></span>
+            <i><b style="width: {{ week.percentage }}%"></b></i>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% if analysis.radar %}
+      <aside class="consistency-radar" aria-labelledby="consistency-radar-heading">
+        <h3 id="consistency-radar-heading">Mais feitos</h3>
+        <svg viewBox="0 0 160 124" role="img" aria-label="Comparação dos hábitos com maior conclusão">
+          {% for ring in analysis.radar.rings %}<polygon class="consistency-radar-ring" points="{{ ring }}"></polygon>{% endfor %}
+          {% for axis in analysis.radar.axes %}<line class="consistency-radar-axis" x1="{{ analysis.radar.center_x }}" y1="{{ analysis.radar.center_y }}" x2="{{ axis.x2|unlocalize }}" y2="{{ axis.y2|unlocalize }}"></line>{% endfor %}
+          <polygon class="consistency-radar-value" points="{{ analysis.radar.value_points }}"></polygon>
+          {% for point in analysis.radar.values %}
+            <circle class="consistency-radar-point" cx="{{ point.x|unlocalize }}" cy="{{ point.y|unlocalize }}" r="2.2"><title>{{ point.title }}: {{ point.percentage }}%</title></circle>
+          {% endfor %}
+        </svg>
+      </aside>
+    {% endif %}
+  {% else %}
+    <div class="habit-analysis-empty consistency-overview-empty">
+      <i data-lucide="chart-no-axes-combined" aria-hidden="true"></i>
+      <div><strong>A análise começa com o primeiro hábito.</strong><p>Crie um hábito diário para acompanhar sua consistência.</p></div>
+    </div>
+  {% endif %}
+</section>

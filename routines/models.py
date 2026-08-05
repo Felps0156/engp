@@ -100,6 +100,12 @@ class WeeklyRoutineItem(TenantAwareModel):
         default=Priority.MEDIUM,
     )
     is_active = models.BooleanField('ativa', default=True)
+    deleted_at = models.DateTimeField(
+        'excluída em',
+        blank=True,
+        null=True,
+        db_index=True,
+    )
     starts_on = models.DateField(
         'início',
         default=timezone.localdate,

@@ -4,11 +4,11 @@ from datetime import date, timedelta
 
 from django.db import IntegrityError, transaction
 from django.db.models import Q
+from django.utils import timezone
 
 from .models import (
     RoutineOccurrence,
     WeeklyRoutineItem,
-    normalize_weekdays,
 )
 
 
@@ -43,7 +43,7 @@ def resume_routine_item(*, item, workspace):
     '''Reactivate a routine item without duplicating existing occurrences.'''
 
     locked_item = _locked_routine_item(item=item, workspace=workspace)
-    if not locked_item.is_active:
+    if not locked_item.is_active and locked_item.deleted_at is None:
         locked_item.is_active = True
         locked_item.save(update_fields=('is_active', 'updated_at'))
     return locked_item
@@ -51,10 +51,16 @@ def resume_routine_item(*, item, workspace):
 
 @transaction.atomic
 def delete_routine_item(*, item, workspace):
-    '''Delete an item while letting PROTECT preserve materialized history.'''
+    '''Archive an item while preserving materialized history.'''
 
     locked_item = _locked_routine_item(item=item, workspace=workspace)
-    locked_item.delete()
+    if locked_item.deleted_at is None:
+        locked_item.is_active = False
+        locked_item.deleted_at = timezone.now()
+        locked_item.save(
+            update_fields=('is_active', 'deleted_at', 'updated_at'),
+        )
+    return locked_item
 
 
 def _coerce_date(value, field_name):
@@ -94,6 +100,7 @@ def generate_routine_occurrences(*, start_date, end_date, workspace=None):
     items = WeeklyRoutineItem.objects.select_related('category', 'workspace').filter(
         workspace__is_active=True,
         is_active=True,
+        deleted_at__isnull=True,
         starts_on__lte=end_date,
     ).filter(
         Q(ends_on__isnull=True) | Q(ends_on__gte=start_date),
@@ -103,7 +110,6 @@ def generate_routine_occurrences(*, start_date, end_date, workspace=None):
 
     created_count = 0
     for item in items.order_by('workspace_id', 'pk'):
-        weekdays = set(normalize_weekdays(item.weekdays))
         current_date = max(start_date, item.starts_on)
         last_date = end_date
         if item.ends_on is not None:
@@ -111,22 +117,62 @@ def generate_routine_occurrences(*, start_date, end_date, workspace=None):
 
         defaults = _occurrence_defaults(item)
         while current_date <= last_date:
-            if current_date.weekday() in weekdays:
-                try:
-                    with transaction.atomic():
-                        _occurrence, created = (
-                            RoutineOccurrence.objects.for_tenant(
-                                item.workspace,
-                            ).get_or_create(
-                                routine_item=item,
-                                occurrence_date=current_date,
-                                defaults=defaults,
-                            )
+            try:
+                with transaction.atomic():
+                    _occurrence, created = (
+                        RoutineOccurrence.objects.for_tenant(
+                            item.workspace,
+                        ).get_or_create(
+                            routine_item=item,
+                            occurrence_date=current_date,
+                            defaults=defaults,
                         )
-                except IntegrityError:
-                    created = False
-                if created:
-                    created_count += 1
+                    )
+            except IntegrityError:
+                created = False
+            if created:
+                created_count += 1
             current_date += timedelta(days=1)
 
     return created_count
+
+
+@transaction.atomic
+def toggle_routine_occurrence(*, item, workspace, occurrence_date):
+    '''Toggle a dated occurrence, materializing a valid missing record if needed.'''
+
+    occurrence_date = _coerce_date(occurrence_date, 'A data da ocorrência')
+    locked_item = _locked_routine_item(item=item, workspace=workspace)
+    if locked_item.deleted_at is not None:
+        raise ValueError('Um hábito excluído não pode ser alterado.')
+    if occurrence_date < locked_item.starts_on:
+        raise ValueError('Este hábito ainda não existia na data informada.')
+    if locked_item.ends_on and occurrence_date > locked_item.ends_on:
+        raise ValueError('Este hábito não estava mais ativo na data informada.')
+    occurrence = (
+        RoutineOccurrence.objects.for_tenant(workspace)
+        .select_for_update()
+        .filter(routine_item=locked_item, occurrence_date=occurrence_date)
+        .first()
+    )
+    if occurrence is None:
+        is_valid_date = locked_item.is_active
+        if not is_valid_date:
+            raise ValueError('Esta rotina não estava agendada para a data informada.')
+        occurrence = RoutineOccurrence.objects.create(
+            routine_item=locked_item,
+            occurrence_date=occurrence_date,
+            **_occurrence_defaults(locked_item),
+        )
+
+    if occurrence.status == RoutineOccurrence.Status.COMPLETED:
+        occurrence.status = RoutineOccurrence.Status.PENDING
+        occurrence.completed_at = None
+    else:
+        occurrence.status = RoutineOccurrence.Status.COMPLETED
+        occurrence.completed_at = timezone.now()
+    occurrence.skipped_at = None
+    occurrence.save(
+        update_fields=('status', 'completed_at', 'skipped_at', 'updated_at'),
+    )
+    return occurrence

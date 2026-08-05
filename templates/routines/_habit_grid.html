@@ -1,0 +1,91 @@
+<section class="habit-grid-section" aria-labelledby="habit-grid-heading">
+  <header>
+    <div>
+      <h3 id="habit-grid-heading">Registro diário</h3>
+      <p>Clique em um círculo disponível para alternar a conclusão.</p>
+    </div>
+    <div class="habit-grid-legend" aria-label="Legenda">
+      <span><i class="habit-status-dot is-completed"></i> Concluído</span>
+      <span><i class="habit-status-dot is-pending"></i> Pendente</span>
+      <span><i class="habit-status-dot is-missing"></i> Sem registro</span>
+    </div>
+  </header>
+
+  {% if analysis.rows %}
+    <div class="habit-grid-scroll" tabindex="0" aria-label="Grade mensal de hábitos com rolagem horizontal">
+      <table class="habit-grid-table">
+        <thead>
+          <tr class="habit-week-row">
+            <th class="habit-name-column" rowspan="2" scope="col">Hábito</th>
+            {% for week in analysis.weeks %}
+              <th colspan="{{ week.days|length }}" scope="colgroup">{{ week.label }}</th>
+            {% endfor %}
+            <th class="habit-progress-column" rowspan="2" scope="col">Progresso</th>
+          </tr>
+          <tr class="habit-day-row">
+            {% for week in analysis.weeks %}
+              {% for day in week.days %}
+                <th class="{% if day.is_today %}is-today{% endif %}" scope="col" title="{{ day.weekday_name }}, {{ day.date|date:'d/m/Y' }}">
+                  <span>{{ day.weekday_initial }}</span>
+                  <strong>{{ day.number }}</strong>
+                </th>
+              {% endfor %}
+            {% endfor %}
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in analysis.rows %}
+            <tr>
+              <th class="habit-name-column" scope="row">
+                <div class="habit-name-line">
+                  {% if row.item.deleted_at %}
+                    <span class="habit-archived-name">{{ row.item.title }}</span>
+                  {% else %}
+                    <a href="{% url 'routines:update' row.item.pk %}" title="Editar {{ row.item.title }}">{{ row.item.title }}</a>
+                    <span class="habit-row-actions">
+                      {% if row.item.is_active %}
+                        <form method="post" action="{% url 'routines:pause' row.item.pk %}">{% csrf_token %}<button type="submit" aria-label="Pausar {{ row.item.title }}" title="Pausar hábito"><i data-lucide="pause"></i></button></form>
+                      {% else %}
+                        <form method="post" action="{% url 'routines:resume' row.item.pk %}">{% csrf_token %}<button type="submit" aria-label="Reativar {{ row.item.title }}" title="Reativar hábito"><i data-lucide="play"></i></button></form>
+                      {% endif %}
+                      <form method="post" action="{% url 'routines:delete' row.item.pk %}" data-confirm-delete="Tem certeza que deseja excluir '{{ row.item.title }}'? O histórico dos meses anteriores será preservado.">{% csrf_token %}<button class="is-danger" type="submit" aria-label="Excluir {{ row.item.title }}" title="Excluir hábito"><i data-lucide="trash-2"></i></button></form>
+                    </span>
+                  {% endif %}
+                </div>
+                {% if row.item.deleted_at %}<small>Excluído</small>{% elif not row.item.is_active %}<small>Pausado</small>{% endif %}
+              </th>
+              {% for cell in row.cells %}
+                <td class="{% if cell.is_today %}is-today{% endif %}">
+                  {% if cell.can_toggle %}
+                    <form method="post" action="{% url 'routines:toggle-occurrence' row.item.pk %}">
+                      {% csrf_token %}
+                      <input type="hidden" name="date" value="{{ cell.date_iso }}">
+                      <input type="hidden" name="month" value="{{ analysis.month_value }}">
+                      <button class="habit-status-button is-{{ cell.status }}" type="submit" aria-label="{{ row.item.title }}, {{ cell.date_label }}: {{ cell.status_label }}. Alternar status." aria-pressed="{% if cell.status == 'completed' %}true{% else %}false{% endif %}" title="{{ row.item.title }}&#10;{{ cell.date_label }}&#10;{{ cell.status_label }}"></button>
+                    </form>
+                  {% elif cell.status == 'completed' %}
+                    <span class="habit-status-dot is-completed" role="img" aria-label="{{ row.item.title }}, {{ cell.date_label }}: concluído" title="{{ row.item.title }}&#10;{{ cell.date_label }}&#10;Concluído"></span>
+                  {% elif cell.status == 'pending' or cell.status == 'skipped' %}
+                    <span class="habit-status-dot is-pending" role="img" aria-label="{{ row.item.title }}, {{ cell.date_label }}: {{ cell.status_label }}" title="{{ row.item.title }}&#10;{{ cell.date_label }}&#10;{{ cell.status_label }}"></span>
+                  {% elif cell.status == 'missing' or cell.status == 'future' %}
+                    <span class="habit-status-dot is-future" role="img" aria-label="{{ row.item.title }}, {{ cell.date_label }}: {{ cell.status_label }}" title="{{ row.item.title }}&#10;{{ cell.date_label }}&#10;{{ cell.status_label }}"></span>
+                  {% else %}
+                    <span class="habit-status-na" role="img" aria-label="{{ row.item.title }}, {{ cell.date_label }}: não agendado" title="{{ row.item.title }} não está agendado em {{ cell.date_label }}">·</span>
+                  {% endif %}
+                </td>
+              {% endfor %}
+              <td class="habit-progress-column">
+                <div class="habit-progress" title="{{ row.completed }} de {{ row.total }} conclusões no período">
+                  <span><i style="width: {{ row.percentage }}%"></i></span>
+                  <strong>{{ row.percentage }}%</strong>
+                </div>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <p class="habit-grid-empty">Nenhum hábito ativo neste mês.</p>
+  {% endif %}
+</section>

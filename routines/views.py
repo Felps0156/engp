@@ -2,7 +2,6 @@
 
 from django.contrib import messages
 from django.db import IntegrityError, transaction
-from django.db.models import ProtectedError
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.utils import timezone
@@ -12,12 +11,14 @@ from django.views.generic.detail import SingleObjectMixin
 
 from base.mixins import RoleRequiredMixin, TenantQuerysetMixin
 
-from .forms import RoutineItemForm
-from .models import WEEKDAY_CHOICES, WeeklyRoutineItem
+from .analysis import build_month_analysis, month_bounds, parse_month
+from .forms import RoutineItemForm, RoutineQuickCreateForm
+from .models import RoutineOccurrence, WeeklyRoutineItem
 from .services import (
     delete_routine_item,
     pause_routine_item,
     resume_routine_item,
+    toggle_routine_occurrence,
 )
 
 
@@ -45,36 +46,63 @@ class RoutineWeeklyView(RoutineScopeMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        items_by_day = {weekday: [] for weekday, _label in WEEKDAY_CHOICES}
-        for item in context['routine_items']:
-            for weekday in item.weekdays or []:
-                if weekday in items_by_day:
-                    items_by_day[weekday].append(item)
-
-        today_weekday = timezone.localdate().weekday()
+        today = timezone.localdate()
+        selected_month = parse_month(self.request.GET.get('month'), fallback=today)
+        month_start, month_end = month_bounds(selected_month)
+        occurrences = RoutineOccurrence.objects.for_tenant(
+            self.request.tenant,
+        ).filter(
+            occurrence_date__range=(month_start, month_end),
+        )
         context.update(
             {
-                'week_days': tuple(
-                    {
-                        'value': weekday,
-                        'label': label,
-                        'items': items_by_day[weekday],
-                        'is_today': weekday == today_weekday,
-                    }
-                    for weekday, label in WEEKDAY_CHOICES
+                'analysis': build_month_analysis(
+                    items=context['routine_items'],
+                    occurrences=occurrences,
+                    month=selected_month,
+                    today=today,
                 ),
-                'today_label': dict(WEEKDAY_CHOICES)[today_weekday],
-                'active_routine_count': self.get_queryset().filter(
-                    is_active=True,
-                ).count(),
+                'quick_form': kwargs.get('quick_form') or RoutineQuickCreateForm(
+                    workspace=self.request.tenant,
+                    user=self.request.user,
+                ),
+                'open_create_dialog': kwargs.get('open_create_dialog', False),
                 'page_title': 'Rotina semanal',
                 'page_description': (
-                    'Transforme o que se repete em um plano visual, leve e fácil '
-                    'de ajustar.'
+                    'Visualize sua consistência, registre conclusões e ajuste o '
+                    'ritmo ao longo do mês.'
                 ),
             },
         )
         return context
+
+    def post(self, request, *args, **kwargs):
+        self.object_list = self.get_queryset()
+        form = RoutineQuickCreateForm(
+            request.POST,
+            workspace=request.tenant,
+            user=request.user,
+        )
+        if form.is_valid():
+            try:
+                with transaction.atomic():
+                    form.save()
+            except IntegrityError:
+                form.add_error(
+                    None,
+                    'Não foi possível criar o hábito. Tente novamente.',
+                )
+            else:
+                messages.success(request, 'Hábito criado.')
+                month = timezone.localdate().strftime('%Y-%m')
+                url = reverse('routines:weekly')
+                return HttpResponseRedirect(f'{url}?month={month}')
+        context = self.get_context_data(
+            object_list=self.object_list,
+            quick_form=form,
+            open_create_dialog=True,
+        )
+        return self.render_to_response(context)
 
 
 class RoutineFormMixin:
@@ -178,19 +206,32 @@ class RoutineResumeView(RoutineActionView):
 
 
 class RoutineDeleteView(RoutineActionView):
-    '''Delete only items without materialized history.'''
+    '''Archive an item without changing previous monthly history.'''
 
     def post(self, request, *args, **kwargs):
         item = self.get_object()
         title = item.title
+        delete_routine_item(item=item, workspace=request.tenant)
+        messages.success(request, f'Hábito "{title}" excluído.')
+        return HttpResponseRedirect(self.get_success_url())
+
+
+class RoutineOccurrenceToggleView(RoutineActionView):
+    '''Toggle one routine completion using a tenant-scoped POST action.'''
+
+    def get_success_url(self):
+        month = self.request.POST.get('month', '')
+        url = reverse('routines:weekly')
+        return f'{url}?month={month}' if month else url
+
+    def post(self, request, *args, **kwargs):
+        item = self.get_object()
         try:
-            delete_routine_item(item=item, workspace=request.tenant)
-        except ProtectedError:
-            messages.error(
-                request,
-                f'Não é possível excluir "{title}" porque ele já possui histórico. '
-                'Pause o item para interromper novas ocorrências.',
+            toggle_routine_occurrence(
+                item=item,
+                workspace=request.tenant,
+                occurrence_date=request.POST.get('date'),
             )
-        else:
-            messages.success(request, f'Item de rotina "{title}" excluído.')
+        except ValueError as exc:
+            messages.error(request, str(exc))
         return HttpResponseRedirect(self.get_success_url())

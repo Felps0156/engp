@@ -51,31 +51,7 @@
               {{ form.estimated_minutes }}
               {{ form.estimated_minutes.errors }}
             </div>
-            <div class="field">
-              {{ form.starts_on.label_tag }}
-              {{ form.starts_on }}
-              {{ form.starts_on.errors }}
-            </div>
-            <div class="field">
-              {{ form.ends_on.label_tag }}
-              {{ form.ends_on }}
-              {{ form.ends_on.errors }}
-            </div>
           </div>
-
-          <fieldset class="routine-weekday-fieldset">
-            <legend>{{ form.weekdays.label }}</legend>
-            <p class="field-help">Escolha todos os dias em que este item se repete.</p>
-            <div class="routine-weekday-grid">
-              {% for checkbox in form.weekdays %}
-                <label class="routine-weekday-choice">
-                  {{ checkbox.tag }}
-                  <span>{{ checkbox.choice_label }}</span>
-                </label>
-              {% endfor %}
-            </div>
-            {{ form.weekdays.errors }}
-          </fieldset>
 
           <div class="routine-form-actions">
             <a class="secondary-button" href="{% url 'routines:weekly' %}">Cancelar</a>

@@ -86,10 +86,11 @@ class WeeklyRoutineItemAdmin(WorkspaceScopedAdminMixin, admin.ModelAdmin):
         'category',
         'priority',
         'is_active',
+        'deleted_at',
         'starts_on',
         'ends_on',
     )
-    list_filter = ('is_active', 'priority', RoutineCategoryFilter)
+    list_filter = ('is_active', 'deleted_at', 'priority', RoutineCategoryFilter)
     search_fields = (
         'title',
         'workspace__name',
@@ -97,7 +98,7 @@ class WeeklyRoutineItemAdmin(WorkspaceScopedAdminMixin, admin.ModelAdmin):
         'category__name',
     )
     list_select_related = ('workspace', 'created_by', 'category')
-    readonly_fields = ('created_at', 'updated_at')
+    readonly_fields = ('deleted_at', 'created_at', 'updated_at')
     ordering = ('workspace_id', 'is_active', 'starts_on', 'title')
 
 

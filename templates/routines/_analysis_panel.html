@@ -1,0 +1,17 @@
+<section class="habit-analysis" aria-labelledby="habit-analysis-heading">
+  <header class="habit-analysis-header">
+    <div>
+      <p class="tasks-section-kicker">Consistência mensal</p>
+      <h2 id="habit-analysis-heading">Acompanhe o ritmo, dia após dia</h2>
+    </div>
+    <nav class="habit-month-nav" aria-label="Navegar entre meses">
+      <a href="?month={{ analysis.previous_month }}" aria-label="Mês anterior" title="Mês anterior"><i data-lucide="chevron-left"></i></a>
+      <strong>{{ analysis.month_label }}</strong>
+      <a href="?month={{ analysis.next_month }}" aria-label="Próximo mês" title="Próximo mês"><i data-lucide="chevron-right"></i></a>
+    </nav>
+  </header>
+
+  {% include 'routines/_analysis_metrics.html' %}
+  {% include 'routines/_consistency_overview.html' %}
+  {% include 'routines/_habit_grid.html' %}
+</section>

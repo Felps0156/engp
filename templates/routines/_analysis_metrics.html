@@ -1,0 +1,18 @@
+<dl class="habit-metrics" aria-label="Indicadores gerais do período">
+  <div>
+    <dt><i data-lucide="list-checks" aria-hidden="true"></i> Hábitos</dt>
+    <dd>{{ analysis.metrics.habit_count }}</dd>
+  </div>
+  <div>
+    <dt><i data-lucide="percent" aria-hidden="true"></i> Média</dt>
+    <dd>{{ analysis.metrics.average }}%</dd>
+  </div>
+  <div>
+    <dt><i data-lucide="flame" aria-hidden="true"></i> Sequência atual</dt>
+    <dd>{{ analysis.metrics.current_streak }} <small>dias</small></dd>
+  </div>
+  <div>
+    <dt><i data-lucide="trophy" aria-hidden="true"></i> Melhor sequência</dt>
+    <dd>{{ analysis.metrics.best_streak }} <small>dias</small></dd>
+  </div>
+</dl>

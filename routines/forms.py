@@ -3,33 +3,24 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from django.db.models import Q
+from django.utils import timezone
 
 from categories.models import Category
 
-from .models import WEEKDAY_CHOICES, WeeklyRoutineItem, normalize_weekdays
+from .models import WeeklyRoutineItem
 
 
 class RoutineItemForm(forms.ModelForm):
     '''Validate recurring routine input while keeping it tenant-aware.'''
-
-    weekdays = forms.MultipleChoiceField(
-        label='Dias da semana',
-        choices=tuple((str(value), label) for value, label in WEEKDAY_CHOICES),
-        widget=forms.CheckboxSelectMultiple,
-        required=True,
-    )
 
     class Meta:
         model = WeeklyRoutineItem
         fields = (
             'title',
             'category',
-            'weekdays',
             'scheduled_time',
             'estimated_minutes',
             'priority',
-            'starts_on',
-            'ends_on',
         )
         widgets = {
             'title': forms.TextInput(
@@ -46,20 +37,13 @@ class RoutineItemForm(forms.ModelForm):
             'estimated_minutes': forms.NumberInput(
                 attrs={'min': 1, 'inputmode': 'numeric'},
             ),
-            'starts_on': forms.DateInput(
-                format='%Y-%m-%d',
-                attrs={'type': 'date'},
-            ),
-            'ends_on': forms.DateInput(
-                format='%Y-%m-%d',
-                attrs={'type': 'date'},
-            ),
         }
 
     def __init__(self, *args, workspace=None, user=None, **kwargs):
         super().__init__(*args, **kwargs)
         self.workspace = workspace or getattr(self.instance, 'workspace', None)
         self.user = user
+        self.instance.weekdays = list(range(7))
 
         if self.workspace is not None and not self.instance.workspace_id:
             self.instance.workspace = self.workspace
@@ -76,31 +60,24 @@ class RoutineItemForm(forms.ModelForm):
             ).filter(Q(is_active=True) | Q(pk=self.instance.category_id))
         self.fields['category'].queryset = categories.order_by('name', 'pk')
 
-        self.fields['title'].label = 'Nome do item'
-        self.fields['category'].label = 'Categoria'
-        self.fields['category'].empty_label = 'Sem categoria'
-        self.fields['scheduled_time'].label = 'Horário (opcional)'
-        self.fields['estimated_minutes'].label = 'Duração estimada (minutos)'
-        self.fields['priority'].label = 'Prioridade'
-        self.fields['starts_on'].label = 'Válida a partir de'
-        self.fields['ends_on'].label = 'Válida até (opcional)'
-
-        if self.instance.pk:
-            self.initial['weekdays'] = [
-                str(weekday) for weekday in self.instance.weekdays or []
-            ]
+        labels = {
+            'title': 'Nome do hábito',
+            'category': 'Categoria',
+            'scheduled_time': 'Horário (opcional)',
+            'estimated_minutes': 'Duração estimada (minutos)',
+            'priority': 'Prioridade',
+        }
+        for field_name, label in labels.items():
+            if field_name in self.fields:
+                self.fields[field_name].label = label
+        if 'category' in self.fields:
+            self.fields['category'].empty_label = 'Sem categoria'
 
     def clean_title(self):
         title = self.cleaned_data['title'].strip()
         if not title:
             raise ValidationError('Informe um título para a rotina.')
         return title
-
-    def clean_weekdays(self):
-        try:
-            return normalize_weekdays(self.cleaned_data.get('weekdays') or [])
-        except ValueError as exc:
-            raise ValidationError(str(exc)) from exc
 
     def clean_category(self):
         category = self.cleaned_data.get('category')
@@ -112,13 +89,19 @@ class RoutineItemForm(forms.ModelForm):
                 )
         return category
 
-    def clean(self):
-        cleaned_data = super().clean()
-        starts_on = cleaned_data.get('starts_on')
-        ends_on = cleaned_data.get('ends_on')
-        if starts_on and ends_on and ends_on < starts_on:
-            self.add_error(
-                'ends_on',
-                'A data final deve ser igual ou posterior ao início.',
-            )
-        return cleaned_data
+    def save(self, commit=True):
+        item = super().save(commit=False)
+        item.weekdays = list(range(7))
+        if not item.pk:
+            item.starts_on = timezone.localdate().replace(day=1)
+            item.ends_on = None
+        if commit:
+            item.save()
+        return item
+
+
+class RoutineQuickCreateForm(RoutineItemForm):
+    '''Minimal daily-habit form used by the in-page creation dialog.'''
+
+    class Meta(RoutineItemForm.Meta):
+        fields = ('title', 'category')
