@@ -2,7 +2,7 @@
   <header>
     <div>
       <h3 id="habit-grid-heading">Registro diário</h3>
-      <p>Clique em um círculo disponível para alternar a conclusão.</p>
+      <p>Clique em qualquer círculo disponível para marcar ou desmarcar a conclusão.</p>
     </div>
     <div class="habit-grid-legend" aria-label="Legenda">
       <span><i class="habit-status-dot is-completed"></i> Concluído</span>
@@ -65,7 +65,7 @@
                     </form>
                   {% elif cell.status == 'completed' %}
                     <span class="habit-status-dot is-completed" role="img" aria-label="{{ row.item.title }}, {{ cell.date_label }}: concluído" title="{{ row.item.title }}&#10;{{ cell.date_label }}&#10;Concluído"></span>
-                  {% elif cell.status == 'pending' or cell.status == 'skipped' %}
+                  {% elif cell.status == 'pending' %}
                     <span class="habit-status-dot is-pending" role="img" aria-label="{{ row.item.title }}, {{ cell.date_label }}: {{ cell.status_label }}" title="{{ row.item.title }}&#10;{{ cell.date_label }}&#10;{{ cell.status_label }}"></span>
                   {% elif cell.status == 'missing' or cell.status == 'future' %}
                     <span class="habit-status-dot is-future" role="img" aria-label="{{ row.item.title }}, {{ cell.date_label }}: {{ cell.status_label }}" title="{{ row.item.title }}&#10;{{ cell.date_label }}&#10;{{ cell.status_label }}"></span>

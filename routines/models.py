@@ -276,6 +276,26 @@ class RoutineOccurrence(TenantAwareModel):
                 name='routine_occ_valid_status',
             ),
             models.CheckConstraint(
+                condition=(
+                    Q(
+                        status='pending',
+                        completed_at__isnull=True,
+                        skipped_at__isnull=True,
+                    )
+                    | Q(
+                        status='completed',
+                        completed_at__isnull=False,
+                        skipped_at__isnull=True,
+                    )
+                    | Q(
+                        status='skipped',
+                        completed_at__isnull=True,
+                        skipped_at__isnull=False,
+                    )
+                ),
+                name='routine_occ_status_timestamps',
+            ),
+            models.CheckConstraint(
                 condition=Q(priority_snapshot__in=('low', 'medium', 'high')),
                 name='routine_occ_valid_priority',
             ),

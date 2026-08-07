@@ -1,0 +1,57 @@
+{% if routine_occurrences %}
+  <div class="home-routine-list">
+    {% for occurrence in routine_occurrences %}
+      <article class="home-routine-item is-{{ occurrence.status }}">
+        <div class="home-routine-state" aria-hidden="true">
+          {% if occurrence.status == 'completed' %}
+            <i data-lucide="check"></i>
+          {% elif occurrence.status == 'skipped' %}
+            <i data-lucide="minus"></i>
+          {% else %}
+            <span></span>
+          {% endif %}
+        </div>
+        <div class="home-routine-content">
+          <h3>{{ occurrence.title_snapshot }}</h3>
+          <p>
+            {% if occurrence.category_snapshot %}{{ occurrence.category_snapshot }}{% else %}Sem categoria{% endif %}
+            {% if occurrence.scheduled_time_snapshot %}
+              · {% if user_settings.time_format == '12h' %}{{ occurrence.scheduled_time_snapshot|time:'g:i A' }}{% else %}{{ occurrence.scheduled_time_snapshot|time:'H:i' }}{% endif %}
+            {% endif %}
+            {% if occurrence.estimated_minutes_snapshot %} · {{ occurrence.estimated_minutes_snapshot }} min{% endif %}
+          </p>
+        </div>
+        <div class="home-routine-actions">
+          {% if occurrence.status == 'pending' %}
+            <form method="post" action="{% url 'routines:complete-occurrence' occurrence.pk %}">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.get_full_path }}">
+              <button class="home-routine-action is-complete" type="submit"><i data-lucide="check" aria-hidden="true"></i>Concluir</button>
+            </form>
+            <form method="post" action="{% url 'routines:skip-occurrence' occurrence.pk %}">
+              {% csrf_token %}
+              <input type="hidden" name="next" value="{{ request.get_full_path }}">
+              <button class="home-routine-action is-skip" type="submit"><i data-lucide="minus" aria-hidden="true"></i>Pular</button>
+            </form>
+          {% elif occurrence.status == 'completed' %}
+            <span class="home-routine-status">Concluída</span>
+          {% else %}
+            <span class="home-routine-status">Pulada</span>
+          {% endif %}
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+  {% if routine_occurrences_has_more %}
+    <p class="home-routine-more"><a class="home-text-link" href="{% url 'routines:weekly' %}">Ver todas as ocorrências <i data-lucide="arrow-right" aria-hidden="true"></i></a></p>
+  {% endif %}
+{% else %}
+  <div class="home-routine-empty">
+    <span class="home-routine-empty-mark" aria-hidden="true"><i data-lucide="calendar-plus"></i></span>
+    <div>
+      <strong>Nenhuma rotina prevista para hoje.</strong>
+      <p>Configure um item recorrente para transformar intenção em uma ação diária.</p>
+      <a class="secondary-button" href="{% url 'routines:create' %}">Configurar rotina</a>
+    </div>
+  </div>
+{% endif %}

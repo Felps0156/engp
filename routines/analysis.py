@@ -238,12 +238,10 @@ def build_month_analysis(*, items, occurrences, month, today):
                     status_label = 'Concluído'
                     completed_count += 1
                     daily_counts[current_date]['completed'] += 1
-                elif occurrence.status == RoutineOccurrence.Status.SKIPPED:
-                    status = 'skipped'
-                    status_label = 'Pulado'
                 else:
+                    # Existing skipped records remain actionable after the option is removed.
                     status = 'pending'
-                    status_label = 'Não concluído'
+                    status_label = 'Pendente'
 
             cells.append(
                 {

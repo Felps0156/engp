@@ -103,6 +103,27 @@ class RoutineAnalysisTests(RoutineTestMixin, TestCase):
             date(2026, 8, 1),
         )
 
+    def test_legacy_skipped_occurrence_is_presented_as_pending(self):
+        item = self.create_item()
+        occurrence = self.create_occurrence(
+            item,
+            date(2026, 8, 6),
+            status=RoutineOccurrence.Status.SKIPPED,
+            skipped_at=timezone.now(),
+        )
+
+        analysis = build_month_analysis(
+            items=[item],
+            occurrences=[occurrence],
+            month=date(2026, 8, 1),
+            today=date(2026, 8, 6),
+        )
+
+        cell = analysis['rows'][0]['cells'][5]
+        self.assertEqual(cell['status'], 'pending')
+        self.assertEqual(cell['status_label'], 'Pendente')
+        self.assertTrue(cell['can_toggle'])
+
     def test_radar_uses_real_completion_rates_when_three_habits_exist(self):
         items = [
             self.create_item(title=f'Hábito {index}')
@@ -291,6 +312,48 @@ class RoutineWeeklyViewTests(RoutineTestMixin, TestCase):
         )
         occurrence = RoutineOccurrence.objects.get(routine_item=item)
         self.assertEqual(occurrence.status, RoutineOccurrence.Status.COMPLETED)
+
+    def test_weekly_grid_allows_toggling_past_and_future_scheduled_days(self):
+        today = timezone.localdate()
+        item = self.create_item(
+            starts_on=today.replace(day=1),
+            weekdays=list(range(7)),
+        )
+        response = self.client.get(
+            reverse('routines:weekly'),
+            {'month': today.strftime('%Y-%m')},
+        )
+
+        self.assertContains(
+            response,
+            f'name="date" value="{today.replace(day=1).isoformat()}"',
+        )
+        self.assertContains(
+            response,
+            f'name="date" value="{today.replace(day=28).isoformat()}"',
+        )
+        self.assertNotContains(response, 'Pulado')
+
+    def test_weekly_grid_makes_legacy_skipped_days_actionable(self):
+        today = timezone.localdate()
+        item = self.create_item(starts_on=today.replace(day=1))
+        self.create_occurrence(
+            item,
+            today,
+            status=RoutineOccurrence.Status.SKIPPED,
+            skipped_at=timezone.now(),
+        )
+
+        response = self.client.get(
+            reverse('routines:weekly'),
+            {'month': today.strftime('%Y-%m')},
+        )
+
+        self.assertNotContains(response, 'Pulado')
+        self.assertContains(
+            response,
+            f'{item.title}, {today:%d/%m/%Y}: Pendente. Alternar status.',
+        )
 
     def test_toggle_endpoint_cannot_access_another_workspace_item(self):
         today = timezone.localdate()

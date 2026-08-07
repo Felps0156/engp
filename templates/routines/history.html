@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Histórico da rotina | ENGP{% endblock %}
+
+{% block body %}
+<main class="account-page routine-history-page workspace-shell">
+  {% include 'registration/_workspace_sidebar.html' %}
+  <div class="workspace-content">
+    <section class="routine-history-main">
+      {% include 'registration/_messages.html' %}
+      <header class="routines-hero routine-history-hero">
+        <div>
+          <p class="eyebrow">Registros preservados</p>
+          <h1>{{ page_title }}</h1>
+          <p class="page-description">{{ page_description }}</p>
+        </div>
+        <a class="home-text-link" href="{% url 'routines:weekly' %}"><i data-lucide="arrow-left" aria-hidden="true"></i>Voltar à rotina</a>
+      </header>
+
+      <section class="routine-history-card" aria-label="Ocorrências da rotina">
+        {% if occurrences %}
+          <div class="routine-history-list">
+            {% for occurrence in occurrences %}
+              <article class="routine-history-row">
+                <time datetime="{{ occurrence.occurrence_date|date:'Y-m-d' }}"><strong>{{ occurrence.occurrence_date|date:'d' }}</strong><span>{{ occurrence.occurrence_date|date:'M Y' }}</span></time>
+                <div>
+                  <h2>{{ occurrence.title_snapshot }}</h2>
+                  <p>{% if occurrence.category_snapshot %}{{ occurrence.category_snapshot }} · {% endif %}{% if occurrence.scheduled_time_snapshot %}{% if user_settings.time_format == '12h' %}{{ occurrence.scheduled_time_snapshot|time:'g:i A' }}{% else %}{{ occurrence.scheduled_time_snapshot|time:'H:i' }}{% endif %}{% else %}Sem horário{% endif %}{% if occurrence.estimated_minutes_snapshot %} · {{ occurrence.estimated_minutes_snapshot }} min{% endif %}</p>
+                </div>
+                <span class="history-status is-{{ occurrence.status }}">{{ occurrence.get_status_display }}</span>
+              </article>
+            {% endfor %}
+          </div>
+
+          {% if is_paginated %}
+            <nav class="routine-history-pagination" aria-label="Paginação do histórico">
+              {% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}&per_page={{ current_per_page }}">Anterior</a>{% endif %}
+              <span>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</span>
+              {% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}&per_page={{ current_per_page }}">Próxima</a>{% endif %}
+            </nav>
+          {% endif %}
+        {% else %}
+          <div class="home-routine-empty"><i data-lucide="history" aria-hidden="true"></i><div><strong>Nenhum registro por enquanto.</strong><p>As ocorrências diárias aparecerão aqui sem perder seus dados originais.</p></div></div>
+        {% endif %}
+      </section>
+    </section>
+  </div>
+</main>
+{% endblock %}

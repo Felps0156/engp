@@ -4201,6 +4201,13 @@ a {
   margin: 0;
 }
 
+.habit-grid-table td form {
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
 .habit-status-button,
 .habit-status-dot {
   display: inline-block;
@@ -4217,6 +4224,8 @@ a {
   position: relative;
   width: 1.5rem;
   height: 1.5rem;
+  min-width: 100%;
+  min-height: 100%;
   padding: 0;
   border: 0;
   background: transparent;
@@ -4266,27 +4275,17 @@ a {
 }
 
 .habit-status-button.is-pending,
-.habit-status-button.is-skipped,
 .habit-status-dot.is-pending {
   border-color: var(--color-brand-600);
 }
 
 .habit-status-button.is-pending,
-.habit-status-button.is-skipped,
 .habit-status-button.is-missing {
   border-color: transparent;
 }
 
 .habit-status-button.is-pending::after {
   border-color: var(--color-brand-600);
-}
-
-.habit-status-button.is-skipped {
-  border-color: transparent;
-}
-
-.habit-status-button.is-skipped::after {
-  border-color: var(--color-warning-600);
 }
 
 .habit-status-button.is-missing,
